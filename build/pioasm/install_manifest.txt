@@ -1,0 +1,5 @@
+/home/pi/mk4001_bridge/build/pioasm-install/pioasm/pioasm
+/home/pi/mk4001_bridge/build/pioasm-install/pioasm/pioasmTargets.cmake
+/home/pi/mk4001_bridge/build/pioasm-install/pioasm/pioasmTargets-release.cmake
+/home/pi/mk4001_bridge/build/pioasm-install/pioasm/pioasmConfig.cmake
+/home/pi/mk4001_bridge/build/pioasm-install/pioasm/pioasmConfigVersion.cmake

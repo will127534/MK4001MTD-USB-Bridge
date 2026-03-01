@@ -1,0 +1,199 @@
+; SDIO PIO programs for MK4001MTD Bridge
+; All on PIO0, single SM0. Programs swapped on the fly:
+;   CMD tx/rx (26 instr) — for CMD52/CMD53 command+response
+;   DAT read  (13 instr) — for CMD53 data read phase
+;   DAT write (15 instr) — for CMD53 data write phase
+; Only one program loaded at a time → full 32 slots available.
+
+; ============================================================
+; Program: sdio_cmd_tx_rx (26 instructions)
+; ============================================================
+.program sdio_cmd_tx_rx
+.side_set 1
+
+.wrap_target
+    pull block          side 0      ; Get config word
+    out x, 16           side 0      ; x = send_bits - 1
+    out y, 16           side 0      ; y = recv_bits - 1
+    set pindirs, 1      side 0      ; CMD pin = output
+
+tx_loop:
+    out pins, 1         side 0 [1]  ; Set CMD bit, CLK low
+    nop                 side 1 [1]  ; CLK high (card samples rising edge)
+    jmp x-- tx_loop     side 0      ; Next bit, CLK low
+
+    set pindirs, 0      side 0      ; CMD pin = input
+    nop                 side 0 [1]  ; Turnaround: one full low phase
+    nop                 side 1 [1]  ; Turnaround: one full high phase
+
+wait_start:
+    nop                 side 0 [1]  ; CLK low
+    nop                 side 1      ; CLK high — card drives CMD on falling edge, stable now
+    jmp pin wait_start  side 1      ; Sample CMD while CLK high — if high, keep waiting
+    ; CMD went low = start bit
+    in pins, 1          side 1      ; Capture start bit (0) while CLK still high
+    jmp y-- rx_entry    side 0      ; Decrement y, CLK low
+
+    push                side 0      ; Edge case: only 1 bit requested
+    jmp done            side 0
+
+rx_entry:
+rx_loop:
+    nop                 side 0 [1]  ; CLK low
+    nop                 side 1 [1]  ; CLK high — data stable
+    in pins, 1          side 1      ; Sample CMD while CLK high
+    jmp y-- rx_loop     side 0      ; CLK low, next bit
+
+    push                side 0      ; Push ISR to RX FIFO
+done:
+    ; 8 extra clocks for bus turnaround
+    set x, 7            side 0
+extra:
+    nop                 side 0 [1]
+    nop                 side 1 [1]
+    jmp x-- extra       side 0
+.wrap
+
+; ============================================================
+; Program: sdio_dat_read (13 instructions)
+; ============================================================
+.program sdio_dat_read
+.side_set 1
+
+    pull block          side 0      ; Get nibble_count - 1
+    mov x, osr          side 0
+
+wait_dat_start:
+    nop                 side 0 [1]  ; CLK low
+    nop                 side 1      ; CLK high
+    in pins, 4          side 1      ; Sample DAT[3:0] while CLK high
+    mov y, isr          side 0
+    mov isr, null       side 0      ; Clear ISR
+    jmp y-- wait_dat_start side 0   ; Non-zero? keep waiting. Zero falls through.
+
+read_loop:
+    nop                 side 0 [1]  ; CLK low
+    nop                 side 1 [1]  ; CLK high — data stable
+    in pins, 4          side 1      ; Read nibble
+    jmp x-- read_loop   side 0
+
+    push                side 0      ; Push remaining
+
+; ============================================================
+; Program: sdio_dat_write (15 instructions)
+; ============================================================
+.program sdio_dat_write
+.side_set 1
+
+    pull block          side 0      ; Get nibble_count - 1
+    mov x, osr          side 0
+    out null, 32        side 0      ; Discard count from OSR, triggers autopull of first data word
+
+write_loop:
+    out pins, 4         side 0 [1]  ; Set DAT nibble, CLK stays low (data setup time)
+    nop                 side 1 [1]  ; CLK high — card samples rising edge
+    jmp x-- write_loop  side 0      ; Next nibble, CLK low
+
+    set pindirs, 0      side 0      ; DAT[3:0] = input
+
+    set x, 15           side 0      ; 16 clocks for NWR + CRC status + margin
+crc_status:
+    nop                 side 0 [1]
+    nop                 side 1 [1]
+    jmp x-- crc_status  side 0
+
+busy_wait:
+    nop                 side 0 [1]  ; CLK low
+    nop                 side 1 [1]  ; CLK high
+    jmp pin busy_done   side 1      ; DAT0 high = not busy → done
+    jmp busy_wait       side 0      ; DAT0 low = still busy
+busy_done:
+    irq 0              side 0       ; Signal completion to CPU
+
+
+% c-sdk {
+
+#include "hardware/clocks.h"
+#include "hardware/gpio.h"
+
+static inline void sdio_cmd_tx_rx_program_init(PIO pio, uint sm, uint offset,
+                                                uint clk_pin, uint cmd_pin, float clkdiv) {
+    pio_sm_config c = sdio_cmd_tx_rx_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, clk_pin);
+    sm_config_set_out_pins(&c, cmd_pin, 1);
+    sm_config_set_out_shift(&c, false, true, 32);
+    sm_config_set_in_pins(&c, cmd_pin);
+    sm_config_set_in_shift(&c, false, false, 32);
+    sm_config_set_jmp_pin(&c, cmd_pin);
+    sm_config_set_set_pins(&c, cmd_pin, 1);
+    sm_config_set_clkdiv(&c, clkdiv);
+
+    pio_gpio_init(pio, clk_pin);
+    pio_gpio_init(pio, cmd_pin);
+    gpio_pull_up(cmd_pin);
+    pio_sm_set_consecutive_pindirs(pio, sm, clk_pin, 1, true);
+    pio_sm_set_consecutive_pindirs(pio, sm, cmd_pin, 1, true);
+    pio_sm_init(pio, sm, offset, &c);
+}
+
+// Full init — assigns GPIO pins (call once during setup)
+static inline void sdio_dat_read_program_init(PIO pio, uint sm, uint offset,
+                                               uint clk_pin, uint dat0_pin, float clkdiv) {
+    pio_sm_config c = sdio_dat_read_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, clk_pin);
+    sm_config_set_in_pins(&c, dat0_pin);
+    sm_config_set_in_shift(&c, false, true, 32);
+    sm_config_set_clkdiv(&c, clkdiv);
+
+    for (int i = 0; i < 4; i++) {
+        pio_gpio_init(pio, dat0_pin + i);
+        gpio_pull_up(dat0_pin + i);
+    }
+    pio_sm_set_consecutive_pindirs(pio, sm, dat0_pin, 4, false);
+    pio_sm_init(pio, sm, offset, &c);
+}
+
+// Fast reinit — skips GPIO assignment (call on program swap)
+static inline void sdio_dat_read_program_reinit(PIO pio, uint sm, uint offset,
+                                                 uint clk_pin, uint dat0_pin, float clkdiv) {
+    pio_sm_config c = sdio_dat_read_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, clk_pin);
+    sm_config_set_in_pins(&c, dat0_pin);
+    sm_config_set_in_shift(&c, false, true, 32);
+    sm_config_set_clkdiv(&c, clkdiv);
+    pio_sm_init(pio, sm, offset, &c);
+}
+
+// Full init
+static inline void sdio_dat_write_program_init(PIO pio, uint sm, uint offset,
+                                                uint clk_pin, uint dat0_pin, float clkdiv) {
+    pio_sm_config c = sdio_dat_write_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, clk_pin);
+    sm_config_set_out_pins(&c, dat0_pin, 4);
+    sm_config_set_out_shift(&c, false, true, 32);
+    sm_config_set_set_pins(&c, dat0_pin, 4);
+    sm_config_set_jmp_pin(&c, dat0_pin);
+    sm_config_set_clkdiv(&c, clkdiv);
+
+    for (int i = 0; i < 4; i++) {
+        pio_gpio_init(pio, dat0_pin + i);
+        gpio_pull_up(dat0_pin + i);
+    }
+    pio_sm_set_consecutive_pindirs(pio, sm, dat0_pin, 4, true);
+    pio_sm_init(pio, sm, offset, &c);
+}
+
+// Fast reinit
+static inline void sdio_dat_write_program_reinit(PIO pio, uint sm, uint offset,
+                                                   uint clk_pin, uint dat0_pin, float clkdiv) {
+    pio_sm_config c = sdio_dat_write_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, clk_pin);
+    sm_config_set_out_pins(&c, dat0_pin, 4);
+    sm_config_set_out_shift(&c, false, true, 32);
+    sm_config_set_set_pins(&c, dat0_pin, 4);
+    sm_config_set_jmp_pin(&c, dat0_pin);
+    sm_config_set_clkdiv(&c, clkdiv);
+    pio_sm_init(pio, sm, offset, &c);
+}
+
+%}
