@@ -17,7 +17,7 @@ So I end up getting N91 to collect traces:
 
 Unlike standard ATA/CF Microdrives, it uses an SDIO interface with ATA commands tunneled through CMD52/CMD53. No existing driver supports this protocol, so this firmware implements the full stack from scratch.
 
-This surprised me, because there is an SDIO-to-ATA standard called CE-ATA. But if you look closely at the release timeline, CE-ATA came later than this drive. As a result, this drive relies entirely on SDIO commands, and CE-ATA is not available.
+This surprised me, because there is an SDIO-to-ATA standard called CE-ATA. But if you look closely at the release timeline, CE-ATA came later than this drive. As a result, this drive relies entirely on SDIO commands, and CE-ATA is not available. CE-ATA has two new cmd CMD60/CMD61 and utilize CMD12/39, but you can see from the traces it is not using any of those.  
 
 The second hardware point to mention is that another piece of misinformation floating around—claiming it’s an 8-bit MMCPlus card—is not only untrue, but the pinout doesn’t follow the MMC standard either. You can find the Nokia N91 service manual with some documentation on the pinout: while the pin numbering follows the MMCPlus standard, the pin mapping does not. This is an important detail if you’re wiring it yourself: it uses the same MMC connector, but the pin mapping is different, more in the Hardware section.
 
