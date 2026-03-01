@@ -1,16 +1,25 @@
 # MK4001MTD USB Bridge
 
 **RP2040 Pico firmware that bridges a Toshiba MK4001MTD 1.8" SDIO microdrive as a USB Mass Storage device.**
+![_DSC1170](https://github.com/user-attachments/assets/8fb591be-40f6-4506-b9c9-b852034268aa)
 
 The MK4001MTD is a 4 GB Microdrive originally used in the Nokia N91 music phone and some other devices, like MP3 players or USB drives, back when flash storage was still quite expensive.
 
 You might have seen introductions claiming this drive uses the MMC protocol, but that’s actually incorrect. I’ve been investigating this for a while: I tried building an 8-bit MMCplus card reader and tested different SD/MMC readers without success. As a last resort, I bought a Nokia N91 to capture logic traces and confirm what protocol it actually uses.
 
+Here is the photo when I was trying to use it with my 8bit-MMCPlus reader board, and it turns out it is not MMC :(
+![_DSC0484](https://github.com/user-attachments/assets/759a07a8-eedc-4ffb-98e2-f37aaae8fe88)
+
+So I end up getting N91 to collect traces:
+![_DSC1093](https://github.com/user-attachments/assets/80ebd34a-8f5d-44cf-ab0b-073e908e863a)
+![_DSC1131](https://github.com/user-attachments/assets/ff7113dc-a388-434d-98ef-c79e2a53c799)
+
+
 Unlike standard ATA/CF Microdrives, it uses an SDIO interface with ATA commands tunneled through CMD52/CMD53. No existing driver supports this protocol, so this firmware implements the full stack from scratch.
 
 This surprised me, because there is an SDIO-to-ATA standard called CE-ATA. But if you look closely at the release timeline, CE-ATA came later than this drive. As a result, this drive relies entirely on SDIO commands, and CE-ATA is not available.
 
-The second hardware point to mention is that another piece of misinformation floating around—claiming it’s an 8-bit MMCPlus card—is not only untrue, but the pinout doesn’t follow the MMC standard either. You can find the Nokia N91 service manual with some documentation on the pinout: while the pin numbering follows the MMCPlus standard, the pin mapping does not. This is an important detail if you’re wiring it yourself: it uses the same MMC connector, but the pin mapping is different.
+The second hardware point to mention is that another piece of misinformation floating around—claiming it’s an 8-bit MMCPlus card—is not only untrue, but the pinout doesn’t follow the MMC standard either. You can find the Nokia N91 service manual with some documentation on the pinout: while the pin numbering follows the MMCPlus standard, the pin mapping does not. This is an important detail if you’re wiring it yourself: it uses the same MMC connector, but the pin mapping is different, more in the Hardware section.
 
 Finally, note that this is co-developed with Claude/OpenClaw. I collected the logic traces manually and set up a closed-loop test station for OpenClaw to iterate on development—analyzing the traces and implementing features. The documentation will mostly be written by Claude; I’ll add my notes inline as well. I’ve also read and double-checked the documentation myself, and it should be reliable and easy to follow.
 
@@ -198,7 +207,15 @@ HDD_PWR isn’t necessary. You don’t have to power-cycle the drive to use it; 
 
 You’ll see debug messages over UART. They’re not going through USB-CDC because it was easier for Claude to set up a separate UART-to-USB logging link that doesn’t disconnect or become unstable during early development.
 
-Finally, here’s the wiring to the actual drive:
+Finally, here’s the wiring to the actual drive.  
+![_DSC1176-2](https://github.com/user-attachments/assets/55c19b6a-03d5-4ee6-8c7b-da028ee14541)
+Here is a crop from the N91 schematic, you can map the pin number also.
+<img width="1188" height="1016" alt="image" src="https://github.com/user-attachments/assets/9d121aad-2bd2-4a44-9ba2-5efc2730b345" />
+
+Side note that this is a 3V drive but I think 3.3V is fine, mostly it is to save some level shifting work.  
+
+I have a USB reader board working in progress, will update to the hardware folder once it is done.
+<img width="4796" height="2608" alt="image" src="https://github.com/user-attachments/assets/aec20183-9199-465c-9a98-3877b47dd1f7" />
 
 
 ## Source Files
