@@ -123,19 +123,6 @@ static void crc16_all_lines(const uint8_t *data, int total_bytes, uint16_t crc_o
     crc_out[0] = c0; crc_out[1] = c1; crc_out[2] = c2; crc_out[3] = c3;
 }
 
-// Single-line version kept for write path
-static uint16_t crc16_dat_line(const uint8_t *data, int total_bytes, int dat_line) {
-    uint16_t crc = 0;
-    for (int i = 0; i < total_bytes; i++) {
-        uint8_t fb;
-        fb = ((crc >> 15) ^ ((data[i] >> (4 + dat_line)) & 1)) & 1;
-        crc = (crc << 1); if (fb) crc ^= 0x1021;
-        fb = ((crc >> 15) ^ ((data[i] >> dat_line) & 1)) & 1;
-        crc = (crc << 1); if (fb) crc ^= 0x1021;
-    }
-    return crc;
-}
-
 // ============================================================
 // Program swap — direct instruction memory overwrite at offset 0
 // ============================================================
@@ -447,10 +434,9 @@ static uint32_t write_stream_buf[((512 * 2 + 16 + 2 + 7) / 8)];
 // Write a single block's data phase via PIO DAT write
 // Returns true on success. data must point to 512 bytes.
 static bool pio_dat_write_one_block(const uint8_t *data) {
-    // Precompute CRC16 per DAT line for this block
+    // Precompute CRC16 per DAT line for this block (LUT-accelerated)
     uint16_t crc_dat[4];
-    for (int line = 0; line < 4; line++)
-        crc_dat[line] = crc16_dat_line(data, 512, line);
+    crc16_all_lines(data, 512, crc_dat);
 
     // Build nibble stream: start(1) + data(1024) + CRC16(16) + stop(1)
     uint32_t nibble_count = 1 + 512 * 2 + 16 + 1;
@@ -563,22 +549,8 @@ bool sdio_pio_cmd53_write_block(uint8_t fn, uint32_t addr, const uint8_t *buf,
 }
 
 // ============================================================
-// Pin management (for bit-bang card init only)
+// Pin management — reclaim GPIO for PIO after power gate
 // ============================================================
-void sdio_pio_release_pins(void) {
-    if (!pio_ready) return;
-    pio_sm_set_enabled(pio, SM, false);
-    
-    gpio_set_function(SDIO_CLK_PIN, GPIO_FUNC_SIO);
-    gpio_set_function(SDIO_CMD_PIN, GPIO_FUNC_SIO);
-    gpio_set_dir(SDIO_CLK_PIN, true);
-    gpio_set_dir(SDIO_CMD_PIN, true);
-    gpio_put(SDIO_CLK_PIN, 0);
-    gpio_put(SDIO_CMD_PIN, 1);
-    for (int i = 0; i < 4; i++)
-        gpio_set_function(SDIO_DAT0_PIN + i, GPIO_FUNC_SIO);
-}
-
 void sdio_pio_acquire_pins(void) {
     if (!pio_ready) return;
     pio_gpio_init(pio, SDIO_CLK_PIN);
@@ -588,4 +560,76 @@ void sdio_pio_acquire_pins(void) {
     pio_sm_set_consecutive_pindirs(pio, SM, SDIO_CLK_PIN, 1, true);
     pio_sm_set_consecutive_pindirs(pio, SM, SDIO_CMD_PIN, 1, true);
     loaded_pgm = PGM_NONE;  // force program reload on next use
+}
+
+// ============================================================
+// SDIO card init — CMD5/CMD3/CMD7 + CCCR config (all PIO)
+// Used for both cold boot and power gate wake.
+// Assumes slow clock already set; switches to fast clock for CCCR.
+// ============================================================
+#define INIT_FAST_CLKDIV  3.125f
+
+bool sdio_pio_card_init(void) {
+    uint32_t resp;
+
+    // CMD5 probe (no argument — discovers card OCR)
+    if (!sdio_pio_send_cmd(5, 0x00000000, &resp)) return false;
+
+    uint32_t card_ocr = resp & 0x00FFFFFF;
+    uint32_t host_ocr = card_ocr ? (card_ocr & 0x00FF8000) : 0x001C0000;
+
+    // CMD5 with OCR until card signals ready (bit 31)
+    bool ready = false;
+    for (int i = 0; i < 100; i++) {
+        if (!sdio_pio_send_cmd(5, host_ocr, &resp)) { sleep_ms(100); continue; }
+        if (resp & 0x80000000) { ready = true; break; }
+        sleep_ms(50);
+    }
+    if (!ready) return false;
+    printf("[SDIO] CMD5 ready (OCR=0x%08lX)\n", resp);
+
+    sleep_ms(20);  // settle after OCR — card needs time before CMD3
+
+    // CMD3 — get relative card address
+    if (!sdio_pio_send_cmd(3, 0x00000000, &resp)) {
+        printf("[SDIO] CMD3 failed\n");
+        return false;
+    }
+    uint16_t rca = (resp >> 16) & 0xFFFF;
+    printf("[SDIO] RCA=0x%04X\n", rca);
+
+    // CMD7 — select card (enters Transfer state)
+    if (!sdio_pio_send_cmd(7, (uint32_t)rca << 16, &resp)) {
+        printf("[SDIO] CMD7 failed\n");
+        return false;
+    }
+
+    // Switch to fast clock — CMD52 CCCR config requires full speed
+    sdio_pio_set_clkdiv(INIT_FAST_CLKDIV);
+    sleep_ms(10);
+
+    // CCCR configuration
+    uint8_t rd;
+    sdio_pio_cmd52_write(0, CCCR_BUS_IF_CTRL, 0x02, &rd);  // 4-bit bus
+    sdio_pio_cmd52_write(0, FBR1_BLKSZ_LO,    0x00, &rd);   // block size = 512
+    sdio_pio_cmd52_write(0, FBR1_BLKSZ_HI,    0x02, &rd);
+    sdio_pio_cmd52_write(0, CCCR_INT_ENABLE,   0x03, &rd);   // master + fn1 int
+    sdio_pio_cmd52_write(0, CCCR_IO_ENABLE,    0x02, &rd);   // enable fn1
+
+    // Wait for fn1 ready — required before CMD53 data transfers
+    bool fn1_ok = false;
+    for (int i = 0; i < 100; i++) {
+        if (sdio_pio_cmd52_read(0, CCCR_IO_READY, &rd) && (rd & 0x02)) {
+            printf("[SDIO] fn1 ready (attempt %d)\n", i);
+            fn1_ok = true;
+            break;
+        }
+        sleep_ms(100);
+    }
+    if (!fn1_ok) {
+        printf("[SDIO] fn1 not ready!\n");
+        return false;
+    }
+
+    return true;
 }

@@ -25,19 +25,19 @@ uint32_t ata_get_capacity(const uint8_t *identify_buf);
 // Print drive info from IDENTIFY data
 void ata_print_identify(const uint8_t *identify_buf);
 
-// SMART: read 512-byte data page (FEATURES=0xD0)
-bool ata_smart_read_data(uint8_t *buf);
-
-// SMART: read 512-byte threshold page (FEATURES=0xD1)
-bool ata_smart_read_thresholds(uint8_t *buf);
-
-// SMART: enable operations (FEATURES=0xD8)
-bool ata_smart_enable(void);
-
-// Dump SMART attributes to UART
+// Dump drive diagnostics to UART (vendor 0xC2 commands)
 void ata_smart_dump(void);
 
 // Power management
 bool ata_standby_immediate(void);
+
+// Error recovery — clear drive error state after a failed command.
+// Call after DRQ timeout / read/write failure before retrying a different LBA.
+void ata_error_recovery(void);
+
+// Single-sector read/write with reduced retries and shorter timeouts.
+// Used by the bad-sector fallback path — faster failure for known-bad areas.
+bool ata_read_sector_fast(uint32_t lba, uint8_t *buf);
+bool ata_write_sector_fast(uint32_t lba, const uint8_t *buf);
 
 #endif

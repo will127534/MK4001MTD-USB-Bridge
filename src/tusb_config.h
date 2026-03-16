@@ -14,7 +14,7 @@
 #define CFG_TUD_MIDI 0
 #define CFG_TUD_VENDOR 0
 
-// MSC Buffer size
+// MSC endpoint buffer size: 64 sectors × 512 bytes = 32 KB
 #define CFG_TUD_MSC_EP_BUFSIZE 32768
 
 #endif

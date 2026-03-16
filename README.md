@@ -155,12 +155,38 @@ Analysis of Nokia N91 logic traces reveals aggressive power management:
 The firmware replicates this behavior with a configurable idle timeout:
 
 ```c
-#define IDLE_STANDBY_MS 1000  // in main.c
+#define IDLE_STANDBY_MS 5000  // in main.c
 ```
 
-After 1 second with no USB read/write activity, the main loop sends STANDBY IMMEDIATE to spin down the drive platters. The drive automatically wakes on the next ATA command (READ/WRITE SECTORS), adding ~400ms of spin-up latency on the first access after standby.
+Two paths trigger HDD power gating:
 
-The idle tracker is armed only after the first MSC read/write callback, so boot-time initialization and USB enumeration don't trigger premature standby.
+1. **Idle timeout** (5 seconds) — main loop detects no I/O activity
+2. **USB suspend** — host suspends the USB port
+
+Both paths send ATA STANDBY IMMEDIATE (0xE0) to flush the write cache and park heads, then cut power via GP9.
+
+**Wake sequence** (triggered by first READ/WRITE after gate):
+1. Power on HDD, wait 500ms for rail settling
+2. PIO-based SDIO reinit: CMD5 (OCR) → 10ms settle → CMD3 (RCA) → CMD7 (select)
+3. Switch to fast PIO clock, configure CCCR via CMD52 (4-bit bus, 512B blocks, fn1 enable)
+4. Poll fn1 ready (CCCR IO_READY bit 1)
+5. N91-style 30ms DRDY status poll until drive is ATA-ready
+
+### Bad Sector Handling
+
+When a multi-sector transfer hits a bad sector:
+1. Chunk read fails → error recovery (IO_ABORT + fn1 reset, ~500ms)
+2. Falls back to per-sector I/O to identify the failing block precisely
+3. The ATA layer waits long enough to capture the final `STATUS/ERROR` bits instead of collapsing the failure into a generic `DRQ timeout`
+4. Bad sector LBA cached → subsequent access fails quickly without re-hammering the drive
+5. Any unrecovered block fails the SCSI command immediately with `MEDIUM ERROR`
+
+On the known failing root-directory sector (`LBA 1952`), the drive now reports the real ATA result:
+
+```text
+READ: ST=0x51 ERR ERR=0x40 UNC LBA=1952
+FAST-RD: ST=0x51 ERR ERR=0x40 UNC LBA=1952
+```
 
 ## Building
 
@@ -193,11 +219,13 @@ sudo openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg \
 | GP5 | SDIO_DAT1 | Data bit 1 |
 | GP6 | SDIO_DAT2 | Data bit 2 |
 | GP7 | SDIO_DAT3 | Data bit 3 |
-| GP9 | LED_TX | Write activity LED (active high) |
-| GP10 | LED_RX | Read activity LED (active high) |
-| GP13 | HDD_PWR | Power switch (HIGH=off, LOW=on via transistor) |
-| GP16 | UART TX | Debug output @ 115200 baud |
-| GP17 | UART RX | Debug input |
+| GP9 | HDD_EN | Drive power enable (HIGH=on) |
+| GP12 | UART TX | Debug output @ 115200 |
+| GP13 | UART RX | Debug input |
+| GP16 | LED: HDD Power | Active low |
+| GP17 | LED: HDD Healthy | Active low |
+| GP18 | LED: Read | Active low |
+| GP19 | LED: Write | Active low |
 
 **Note:** GP0 and GP1 are dead on this specific Pico unit. All SDIO pin assignments are shifted +2.
 
@@ -278,29 +306,29 @@ I have a USB reader board working in progress, will update to the hardware folde
 
 ## Source Files
 
-| File | Purpose |
-|------|---------|
-| `main.c` | Initialization, power control, PIO verification, USB main loop |
-| `sdio_hw.c/.h` | Bit-bang SDIO: CMD5/3/7/52/53, CRC7/16, card init |
-| `sdio_pio.c/.h` | PIO SDIO: CMD52, CMD53 read/write, program swap, DMA |
-| `sdio.pio` | PIO assembly: CMD tx/rx, DAT read, DAT write programs |
-| `ata_sdio.c/.h` | ATA command layer: IDENTIFY, READ/WRITE SECTORS, SMART |
-| `msc_device.c` | USB MSC callbacks: read10, write10, inquiry, capacity |
-| `led.h` | Activity LED control (GP9 TX, GP10 RX) |
-| `usb_descriptors.c` | USB device/config/string descriptors |
-| `tusb_config.h` | TinyUSB configuration (MSC endpoint buffer = 8192) |
+| File | Lines | Purpose |
+|------|-------|---------|
+| `main.c` | 210 | Init, idle standby, USB suspend/resume |
+| `msc_device.c` | 400 | USB MSC callbacks, power gate wake, bad sector cache |
+| `ata_sdio.c` | 390 | ATA commands, error recovery, vendor diagnostics |
+| `sdio_pio.c` | 635 | PIO SDIO: CMD52, CMD53 read/write, program swap, CRC16 |
+| `sdio_hw.c` | 45 | Pin init + HDD power control |
+| `sdio.pio` | 200 | PIO assembly + C SDK init helpers |
+| `led.h` | 37 | LED helpers (GP16–GP19, active low) |
+| `usb_descriptors.c` | 77 | USB device/config/string descriptors |
+| `tusb_config.h` | 20 | TinyUSB config (MSC, 32KB EP buffer) |
 
 ## Version History
 
 | Version | Read | Write | Key Change |
 |---------|------|-------|------------|
 | v0.1–v0.3 | 105 kB/s | 93 kB/s | Bit-bang SDIO, CRC16, retry logic |
-| v0.4 | 229 kB/s | 92 kB/s | PIO reads (two-SM approach) |
-| v0.5 | 374 kB/s | 58 kB/s | Single-SM program swap, direct instr memory write |
+| v0.5 | 374 kB/s | — | Single-SM PIO, direct instruction memory swap |
 | v0.6 | 583 kB/s | 93 kB/s | Multi-block CMD53 reads, CRC clock drain fix |
-| v0.7 | 583 kB/s | 93 kB/s | Activity LEDs (GP9/GP10) |
-| v0.8 | 588 kB/s | 274 kB/s | PIO writes, OSR flush fix (`out null, 32`) |
-| **v0.9** | **550 kB/s** | **364 kB/s** | **Multi-block CMD53 writes (+33%), idle standby** |
+| v0.8 | 588 kB/s | 274 kB/s | PIO writes, OSR flush fix |
+| v0.9 | 475 kB/s | 371 kB/s | 64-sector chunks, CRC16 read verification |
+| v0.10 | 453 kB/s | 329 kB/s | LED remap, HDD EN pin, UART on GP12/GP13 |
+| **v0.11** | **~450 kB/s** | **~340 kB/s** | **HDD power gate, PIO wake, bad sector sense, USB suspend** |
 
 ## Testing
 

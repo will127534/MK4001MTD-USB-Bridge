@@ -1,7 +1,0 @@
-/home/pi/mk4001_bridge/build/pioasm/CMakeFiles/pioasm.dir
-/home/pi/mk4001_bridge/build/pioasm/CMakeFiles/edit_cache.dir
-/home/pi/mk4001_bridge/build/pioasm/CMakeFiles/rebuild_cache.dir
-/home/pi/mk4001_bridge/build/pioasm/CMakeFiles/list_install_components.dir
-/home/pi/mk4001_bridge/build/pioasm/CMakeFiles/install.dir
-/home/pi/mk4001_bridge/build/pioasm/CMakeFiles/install/local.dir
-/home/pi/mk4001_bridge/build/pioasm/CMakeFiles/install/strip.dir
