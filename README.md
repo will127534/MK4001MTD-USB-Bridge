@@ -28,6 +28,8 @@ Finally, note that this is co-developed with Claude/OpenClaw. I collected the lo
 For insights into the analytics on N91 trace, it is under /docs/N91_TRACE_ANALYSIS.md, I've also put the N91 service manual there along with the raw logic traces.
 
 See more in the blog post here: [https://www.willwhang.dev/Reading-MK4001MTD/](https://www.willwhang.dev/Reading-MK4001MTD/)
+See it in activity here: [https://youtu.be/GC4xil3_Bbc](https://youtu.be/GC4xil3_Bbc)
+
 ## Status
 
 Fully functional USB mass storage with PIO-accelerated reads/writes and idle power management.
