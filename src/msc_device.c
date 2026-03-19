@@ -87,12 +87,19 @@ static bool wake_from_power_gate(const char *reason) {
     led_hdd_power_on();
 
     // Brief settling delay for HDD power rail + SDIO controller
-    for (int i = 0; i < 5; i++) { sleep_ms(100); tud_task(); }  // 500ms
+    sleep_ms(10);
+    tud_task();
 
     // Poll SDIO init — reset PIO state each attempt for clean slate
     printf("[PWR] Wake: waiting for SDIO...\n");
     bool inited = false;
+    sdio_pio_acquire_pins();
+    sdio_pio_set_clkdiv(WAKE_SLOW_CLKDIV);
+    if (sdio_pio_try_warm_probe()) {
+        inited = true;
+    }
     for (int attempt = 0; attempt < 100; attempt++) {  // up to ~10s
+        if (inited) break;
         tud_task();
         sdio_pio_acquire_pins();
         sdio_pio_set_clkdiv(WAKE_SLOW_CLKDIV);
@@ -143,6 +150,10 @@ void msc_power_gate(void) {
     printf("[PWR] STANDBY IMMEDIATE → power gate\n");
     ata_standby_immediate();
     sleep_ms(50);
+    if (sdio_pio_deselect_card()) {
+        printf("[PWR] SDIO card deselected\n");
+    }
+    sleep_ms(2);
     hdd_power_off();
     led_hdd_power_off();
     drive_spinning = false;

@@ -309,7 +309,7 @@ void ata_error_recovery(void) {
     // Step 1: IO_ABORT — tell the SDIO controller to cancel fn1's pending operation.
     // This is the SDIO-standard way to recover from a stuck I/O transfer.
     uint8_t abort_resp = 0;
-    cmd52_wr(0, CCCR_IO_ABORT, 0x01, &abort_resp);  // Abort fn1
+    cmd52_wr(0, CCCR_IO_ABORT, CCCR_IO_ABORT_FN1, &abort_resp);  // Abort fn1
 
     // Step 2: Read STATUS to clear any pending interrupt / error latch
     if (ata_reg_read(ATA_REG_STATUS, &status)) {

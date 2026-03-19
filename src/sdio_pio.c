@@ -25,6 +25,8 @@ static const uint SM = 0;  // single state machine
 static int dma_chan = -1;
 static bool pio_ready = false;
 static float current_clkdiv = 6.25f;
+static bool cached_rca_valid = false;
+static uint16_t cached_rca = 0;
 
 // Track which program is loaded
 typedef enum { PGM_NONE, PGM_CMD, PGM_DAT_RD, PGM_DAT_WR } pgm_t;
@@ -283,6 +285,45 @@ bool sdio_pio_cmd52_read(uint8_t fn, uint32_t addr, uint8_t *data) {
 
 bool sdio_pio_cmd52_write(uint8_t fn, uint32_t addr, uint8_t data, uint8_t *resp_data) {
     return pio_cmd52(true, fn, addr, data, resp_data);
+}
+
+// Commands like deselect-CMD7 do not provide a useful response here, so we just
+// clock them out and stop the state machine after the command phase completes.
+static bool sdio_pio_send_cmd_no_resp(uint8_t cmd_index, uint32_t arg) {
+    if (!pio_ready) return false;
+
+    uint8_t cmd_buf[6];
+    cmd_buf[0] = 0x40 | (cmd_index & 0x3F);
+    cmd_buf[1] = (arg >> 24) & 0xFF;
+    cmd_buf[2] = (arg >> 16) & 0xFF;
+    cmd_buf[3] = (arg >> 8)  & 0xFF;
+    cmd_buf[4] = arg & 0xFF;
+    cmd_buf[5] = (pio_crc7(cmd_buf, 40) << 1) | 0x01;
+
+    cmd_sm_reset();
+
+    // The RX count is ignored here; we stop the state machine after the command
+    // has had enough time to clock out on the wire.
+    uint32_t config = (47u << 16) | 39u;
+    pio_sm_put_blocking(pio, SM, config);
+
+    uint32_t w1 = ((uint32_t)cmd_buf[0] << 24) | ((uint32_t)cmd_buf[1] << 16) |
+                  ((uint32_t)cmd_buf[2] << 8)  | (uint32_t)cmd_buf[3];
+    uint32_t w2 = ((uint32_t)cmd_buf[4] << 24) | ((uint32_t)cmd_buf[5] << 16);
+    pio_sm_put_blocking(pio, SM, w1);
+    pio_sm_put_blocking(pio, SM, w2);
+
+    // 48 command bits + turnaround/guard clocks at the slow init clock fit well
+    // within 1 ms. Stopping the SM avoids waiting forever for a response-less
+    // command.
+    sleep_ms(1);
+    pio_sm_set_enabled(pio, SM, false);
+    pio_sm_clear_fifos(pio, SM);
+    return true;
+}
+
+bool sdio_pio_deselect_card(void) {
+    return sdio_pio_send_cmd_no_resp(7, 0x00000000);
 }
 
 // ============================================================
@@ -568,35 +609,93 @@ void sdio_pio_acquire_pins(void) {
 // Assumes slow clock already set; switches to fast clock for CCCR.
 // ============================================================
 #define INIT_FAST_CLKDIV  3.125f
+#define CMD5_READY_TIMEOUT_MS 500u
+#define CMD5_POLL_INTERVAL_MS 30u
 
-bool sdio_pio_card_init(void) {
+static bool sdio_pio_wait_ready_ocr(uint32_t host_ocr, uint32_t *out_resp) {
+    uint32_t resp = 0;
+    bool saw_unsettled_ready = false;
+    uint32_t start = to_ms_since_boot(get_absolute_time());
+
+    while ((to_ms_since_boot(get_absolute_time()) - start) < CMD5_READY_TIMEOUT_MS) {
+        if (sdio_pio_send_cmd(5, host_ocr, &resp) && (resp & 0x80000000)) {
+            uint32_t ready_ocr = resp & 0x00FFFFFF;
+            if (ready_ocr == host_ocr) {
+                if (out_resp) *out_resp = resp;
+                return true;
+            }
+
+            if (!saw_unsettled_ready) {
+                printf("[SDIO] CMD5 ready but OCR not settled yet (resp=0x%08lX, want=0x%08lX)\n",
+                       resp, 0x80000000u | host_ocr);
+                saw_unsettled_ready = true;
+            }
+
+            sleep_ms(CMD5_POLL_INTERVAL_MS);
+            continue;
+        }
+
+        sleep_ms(CMD5_POLL_INTERVAL_MS);
+    }
+    return false;
+}
+
+static bool sdio_pio_card_init_once(uint16_t *out_rca) {
     uint32_t resp;
 
     // CMD5 probe (no argument — discovers card OCR)
     if (!sdio_pio_send_cmd(5, 0x00000000, &resp)) return false;
 
     uint32_t card_ocr = resp & 0x00FFFFFF;
-    uint32_t host_ocr = card_ocr ? (card_ocr & 0x00FF8000) : 0x001C0000;
+    // Follow the N91 traces here: probe may report 0x1F8000, but the working
+    // host negotiation window is 0x001C0000 rather than mirroring the full
+    // probed OCR mask.
+    uint32_t host_ocr = (card_ocr & 0x001C0000) ? 0x001C0000 : 0x001C0000;
 
     // CMD5 with OCR until card signals ready (bit 31)
-    bool ready = false;
-    for (int i = 0; i < 100; i++) {
-        if (!sdio_pio_send_cmd(5, host_ocr, &resp)) { sleep_ms(100); continue; }
-        if (resp & 0x80000000) { ready = true; break; }
-        sleep_ms(50);
-    }
-    if (!ready) return false;
+    if (!sdio_pio_wait_ready_ocr(host_ocr, &resp)) return false;
     printf("[SDIO] CMD5 ready (OCR=0x%08lX)\n", resp);
 
-    sleep_ms(20);  // settle after OCR — card needs time before CMD3
+    // Cold boot can assert CMD5 ready slightly before the RCA assignment path is
+    // stable. Retry CMD3 a few times with a fresh CMD5 ready poll before falling
+    // back to the warm-restart deselect path.
+    for (int cmd3_attempt = 0; cmd3_attempt < 4; cmd3_attempt++) {
+        sleep_ms(cmd3_attempt == 0 ? 20 : 30);
+        if (sdio_pio_send_cmd(3, 0x00000000, &resp)) {
+            *out_rca = (resp >> 16) & 0xFFFF;
+            if (cmd3_attempt == 0) {
+                printf("[SDIO] RCA=0x%04X\n", *out_rca);
+            } else {
+                printf("[SDIO] RCA=0x%04X (after CMD5/CMD3 retry %d)\n", *out_rca, cmd3_attempt);
+            }
+            return true;
+        }
 
-    // CMD3 — get relative card address
-    if (!sdio_pio_send_cmd(3, 0x00000000, &resp)) {
-        printf("[SDIO] CMD3 failed\n");
-        return false;
+        if (cmd3_attempt != 3) {
+            printf("[SDIO] CMD3 failed, re-polling CMD5...\n");
+            if (!sdio_pio_wait_ready_ocr(host_ocr, &resp)) break;
+            printf("[SDIO] CMD5 ready (OCR=0x%08lX)\n", resp);
+        }
     }
-    uint16_t rca = (resp >> 16) & 0xFFFF;
-    printf("[SDIO] RCA=0x%04X\n", rca);
+
+    // Warm MCU restarts on this board leave the drive powered, so the SDIO side
+    // can still be sitting in a selected state from the previous host instance.
+    printf("[SDIO] CMD3 failed, trying CMD7 deselect...\n");
+    sdio_pio_deselect_card();
+    sleep_ms(2);
+    if (sdio_pio_send_cmd(3, 0x00000000, &resp)) {
+        *out_rca = (resp >> 16) & 0xFFFF;
+        printf("[SDIO] RCA=0x%04X (after deselect)\n", *out_rca);
+        return true;
+    }
+
+    *out_rca = 0x0001;
+    printf("[SDIO] CMD3 still failed, trying retained RCA=0x%04X\n", *out_rca);
+    return true;
+}
+
+static bool sdio_pio_finish_init_with_rca(uint16_t rca) {
+    uint32_t resp;
 
     // CMD7 — select card (enters Transfer state)
     if (!sdio_pio_send_cmd(7, (uint32_t)rca << 16, &resp)) {
@@ -631,5 +730,29 @@ bool sdio_pio_card_init(void) {
         return false;
     }
 
+    cached_rca = rca;
+    cached_rca_valid = true;
     return true;
+}
+
+bool sdio_pio_try_warm_probe(void) {
+    if (!cached_rca_valid) return false;
+
+    printf("[SDIO] Warm probe: trying cached RCA=0x%04X\n", cached_rca);
+    if (sdio_pio_finish_init_with_rca(cached_rca)) {
+        printf("[SDIO] Warm probe OK\n");
+        return true;
+    }
+
+    printf("[SDIO] Warm probe failed, clearing cached RCA\n");
+    cached_rca_valid = false;
+    cached_rca = 0;
+    return false;
+}
+
+bool sdio_pio_card_init(void) {
+    uint16_t rca = 0;
+
+    if (!sdio_pio_card_init_once(&rca)) return false;
+    return sdio_pio_finish_init_with_rca(rca);
 }

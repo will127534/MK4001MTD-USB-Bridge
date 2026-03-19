@@ -19,6 +19,7 @@
 #define CCCR_INT_ENABLE     0x04
 #define CCCR_INT_PENDING    0x05
 #define CCCR_IO_ABORT       0x06
+#define CCCR_IO_ABORT_FN1   0x01
 #define CCCR_BUS_IF_CTRL    0x07
 
 // FBR (Function Basic Registers) for fn1
