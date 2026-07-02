@@ -130,6 +130,14 @@ static void crc16_all_lines(const uint8_t *data, int total_bytes, uint16_t crc_o
 // ============================================================
 static bool gpio_inited = false;
 
+// CMD/DAT are source-synchronous to our own CLK (card shifts on our falling
+// edge), so the PIO 2-flop input synchronizers only add sampling latency —
+// bypassing them lets the hot loops sample at the rising edge in 4 cycles/bit.
+static void bypass_input_sync(void) {
+    hw_set_bits(&pio->input_sync_bypass,
+                (1u << SDIO_CMD_PIN) | (0xFu << SDIO_DAT0_PIN));
+}
+
 static void ensure_gpio_init(void) {
     if (gpio_inited) return;
     pio_gpio_init(pio, SDIO_CLK_PIN);
@@ -139,6 +147,7 @@ static void ensure_gpio_init(void) {
         pio_gpio_init(pio, SDIO_DAT0_PIN + i);
         gpio_pull_up(SDIO_DAT0_PIN + i);
     }
+    bypass_input_sync();
     gpio_inited = true;
 }
 
@@ -616,6 +625,7 @@ void sdio_pio_acquire_pins(void) {
     pio_gpio_init(pio, SDIO_CMD_PIN);
     for (int i = 0; i < 4; i++)
         pio_gpio_init(pio, SDIO_DAT0_PIN + i);
+    bypass_input_sync();
     pio_sm_set_consecutive_pindirs(pio, SM, SDIO_CLK_PIN, 1, true);
     pio_sm_set_consecutive_pindirs(pio, SM, SDIO_CMD_PIN, 1, true);
     loaded_pgm = PGM_NONE;  // force program reload on next use

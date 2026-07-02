@@ -18,9 +18,8 @@
     set pindirs, 1      side 0      ; CMD pin = output
 
 tx_loop:
-    out pins, 1         side 0 [1]  ; Set CMD bit, CLK low
-    nop                 side 1 [1]  ; CLK high (card samples rising edge)
-    jmp x-- tx_loop     side 0      ; Next bit, CLK low
+    out pins, 1         side 0 [1]  ; Set CMD bit, CLK low (full low phase of setup)
+    jmp x-- tx_loop     side 1 [1]  ; CLK high — card samples rising edge
 
     set pindirs, 0      side 0      ; CMD pin = input
     nop                 side 0 [1]  ; Turnaround: one full low phase
@@ -39,10 +38,9 @@ wait_start:
 
 rx_entry:
 rx_loop:
-    nop                 side 0 [1]  ; CLK low
-    nop                 side 1 [1]  ; CLK high — data stable
-    in pins, 1          side 1      ; Sample CMD while CLK high
-    jmp y-- rx_loop     side 0      ; CLK low, next bit
+    nop                 side 0 [1]  ; CLK low — card shifts next bit after falling edge
+    in pins, 1          side 1      ; Sample CMD at rising edge (input sync bypassed)
+    jmp y-- rx_loop     side 1      ; CLK high, next bit
 
     push                side 0      ; Push ISR to RX FIFO
 done:
@@ -72,10 +70,9 @@ wait_dat_start:
     jmp y-- wait_dat_start side 0   ; Non-zero? keep waiting. Zero falls through.
 
 read_loop:
-    nop                 side 0 [1]  ; CLK low
-    nop                 side 1 [1]  ; CLK high — data stable
-    in pins, 4          side 1      ; Read nibble
-    jmp x-- read_loop   side 0
+    nop                 side 0 [1]  ; CLK low — card shifts next nibble after falling edge
+    in pins, 4          side 1      ; Sample DAT[3:0] at rising edge (input sync bypassed)
+    jmp x-- read_loop   side 1      ; CLK high
 
     push                side 0      ; Push remaining
 
@@ -90,9 +87,8 @@ read_loop:
     out null, 32        side 0      ; Discard count from OSR, triggers autopull of first data word
 
 write_loop:
-    out pins, 4         side 0 [1]  ; Set DAT nibble, CLK stays low (data setup time)
-    nop                 side 1 [1]  ; CLK high — card samples rising edge
-    jmp x-- write_loop  side 0      ; Next nibble, CLK low
+    out pins, 4         side 0 [1]  ; Set DAT nibble, CLK low (full low phase of setup)
+    jmp x-- write_loop  side 1 [1]  ; CLK high — card samples rising edge
 
     set pindirs, 0      side 0      ; DAT[3:0] = input
 
