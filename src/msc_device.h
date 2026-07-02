@@ -12,9 +12,8 @@ bool msc_is_drive_spinning(void);
 bool msc_is_power_gated(void);
 void msc_power_gate(void);
 
-// Main-loop hooks: flush the staged write-behind chunk / prefetch the next
-// sequential read chunk, overlapping drive I/O with USB transfers.
-void msc_service_write_behind(void);
+// Main-loop hook: prefetch the next sequential read chunk while the previous
+// one streams to the host over USB.
 void msc_service_prefetch(void);
 
 #endif

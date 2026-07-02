@@ -37,7 +37,7 @@ Fully functional USB mass storage with PIO-accelerated reads/writes and idle pow
 | Metric | Value |
 |--------|-------|
 | Read speed | ~985 kB/s (USB full-speed limited) |
-| Write speed | ~925 kB/s (USB full-speed limited) |
+| Write speed | ~700 kB/s (synchronous write-through) |
 | Raw SDIO-side speed | ~2.35 MB/s read / ~2.15 MB/s write (drive-limited) |
 | Capacity | 3.75 GB (7,862,400 sectors) |
 | Filesystem | FAT32 verified (mount/unmount/fsck clean) |
@@ -54,7 +54,7 @@ USB Host ←→ USB MSC (TinyUSB) ←→ ATA Layer ←→ SDIO Layer (PIO) ←�
 
 The firmware has four layers:
 
-1. **USB MSC** (`msc_device.c`) — TinyUSB Mass Storage Class. Translates SCSI READ(10)/WRITE(10) into ATA sector operations. 32 KB EP buffer, batching up to 64 sectors per USB transfer. Drive I/O is overlapped with USB transfers: a sequential-read prefetcher fetches the next chunk while the previous one streams to the host, and writes are staged and flushed from the main loop while USB receives the next piece (write-behind; deferred MEDIUM ERROR on the next command if a background flush fails). Known-bad sectors always use a strict synchronous path so the medium error lands on the exact command.
+1. **USB MSC** (`msc_device.c`) — TinyUSB Mass Storage Class. Translates SCSI READ(10)/WRITE(10) into ATA sector operations. 32 KB EP buffer, batching up to 64 sectors per USB transfer. Sequential reads are overlapped with USB: a prefetcher fetches the next chunk from the drive while the previous one streams to the host. Writes are synchronous write-through (the device reports no write cache, so errors must land on the exact command — never deferred).
 
 2. **ATA-over-SDIO** (`ata_sdio.c`) — Implements ATA commands (IDENTIFY, READ SECTORS, WRITE SECTORS) by writing to ATA registers mapped into SDIO function 1 address space via CMD52, and transferring sector data via CMD53. 3-tier retry logic at CMD, data, and ATA levels.
 
@@ -184,14 +184,16 @@ When a multi-sector transfer hits a bad sector:
 1. Chunk read fails → error recovery (IO_ABORT + fn1 reset, ~500ms)
 2. Falls back to per-sector I/O to identify the failing block precisely
 3. The ATA layer waits long enough to capture the final `STATUS/ERROR` bits instead of collapsing the failure into a generic `DRQ timeout`
-4. Bad sector LBA cached → subsequent access fails quickly without re-hammering the drive
-5. Any unrecovered block fails the SCSI command immediately with `MEDIUM ERROR`
+4. Any unrecovered block fails the SCSI command immediately with `MEDIUM ERROR` (read: 03/11/00, write: 03/0C/00)
+5. Bad-sector LBA cached → repeat *reads* fail quickly without re-hammering the drive (anti-hammer protection against host retry storms)
+6. *Writes* always touch the medium, per SBC — a successful write to a cached-bad LBA clears it from the cache, exactly like a drive clearing a pending sector
 
-On the known failing root-directory sector (`LBA 1952`), the drive now reports the real ATA result:
+Point 6 is not academic: this drive had a long-standing unreadable sector at `LBA 1952` (`READ: ST=0x51 ERR ERR=0x40 UNC`). Once the bridge allowed a write to actually reach it, the drive rewrote the sector and it has read back cleanly since:
 
 ```text
-READ: ST=0x51 ERR ERR=0x40 UNC LBA=1952
-FAST-RD: ST=0x51 ERR ERR=0x40 UNC LBA=1952
+[ATA] FAST-RD: ST=0x51 ERR ERR=0x40 UNC LBA=1952
+[MSC] BAD SECTOR read LBA=1952
+[MSC] Bad sector LBA=1952 repaired by write
 ```
 
 ## Building
@@ -327,7 +329,7 @@ HW specifically designed for this drive is under /hardware!
 | v0.9 | 475 kB/s | 371 kB/s | 64-sector chunks, CRC16 read verification |
 | v0.10 | 453 kB/s | 329 kB/s | LED remap, HDD EN pin, UART on GP12/GP13 |
 | v0.11 | ~450 kB/s | ~340 kB/s | HDD power gate, PIO wake, bad sector sense, USB suspend |
-| **v0.12** | **~985 kB/s** | **~925 kB/s** | **Drive/USB I/O overlap (read prefetch + write-behind), pipelined PIO blocks, bswap DMA, 4-cycle PIO loops, SYNCHRONIZE CACHE** |
+| **v0.12** | **~985 kB/s** | **~700 kB/s** | **Read prefetch overlaps USB, pipelined PIO blocks, bswap DMA, 4-cycle PIO loops, SYNCHRONIZE CACHE, SBC-style bad-sector semantics (write-through, write-repair)** |
 
 ## Testing
 

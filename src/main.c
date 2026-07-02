@@ -239,7 +239,6 @@ int main(void) {
 
     for (;;) {
         tud_task();
-        msc_service_write_behind();
         msc_service_prefetch();
         service_idle_standby();
     }
