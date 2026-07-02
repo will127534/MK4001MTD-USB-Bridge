@@ -404,6 +404,31 @@ bool ata_standby_immediate(void) {
     return ata_wait_not_busy(5000);
 }
 
+// FLUSH CACHE (0xE7) — used for SCSI SYNCHRONIZE CACHE. Drives that don't
+// implement it abort the command; treat that as a successful no-op since
+// STANDBY IMMEDIATE (idle path) flushes anyway.
+bool ata_flush_cache(void) {
+    static bool flush_unsupported = false;
+    if (flush_unsupported) return true;
+
+    if (!ata_wait_not_busy(5000)) return false;
+    if (!ata_reg_write(ATA_REG_COMMAND, ATA_CMD_FLUSH_CACHE)) return false;
+    if (!ata_wait_not_busy(10000)) return false;
+
+    uint8_t status = 0, error = 0;
+    if (!ata_read_status_error(&status, &error)) return false;
+    if (status & ATA_STATUS_ERR) {
+        if (error & ATA_ERROR_ABRT) {
+            printf("[ATA] FLUSH CACHE not supported (ABRT) — treating as no-op\n");
+            flush_unsupported = true;
+            return true;
+        }
+        printf("[ATA] FLUSH CACHE failed: ST=0x%02X ERR=0x%02X\n", status, error);
+        return false;
+    }
+    return true;
+}
+
 // ============================================================
 // SMART commands
 // ============================================================
@@ -521,9 +546,6 @@ static bool ata_vendor_c2(uint8_t feature, uint8_t *out_regs) {
 }
 
 void ata_smart_dump(void) {
-    static uint8_t smart_data[512];
-    static uint8_t smart_thresh[512];
-
     printf("\n[DIAG] === Drive Diagnostics ===\n");
     printf("[DIAG] Standard SMART: not supported (IDENTIFY W82 bit0 = 0)\n");
 

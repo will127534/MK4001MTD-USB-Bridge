@@ -36,7 +36,8 @@
 
 #define DRIVE_WARMUP_SECTORS 16u
 
-static uint8_t identify_buf[512];
+// 4-byte aligned: filled via 32-bit DMA in the PIO read path
+static uint8_t identify_buf[512] __attribute__((aligned(4)));
 
 static uint16_t id_word(const uint8_t *buf, uint8_t w) {
     return (uint16_t)buf[w * 2] | ((uint16_t)buf[w * 2 + 1] << 8);
@@ -160,7 +161,7 @@ static bool init_drive(void) {
     ata_smart_dump();
 
     // Warm up: MBR + sequential reads
-    uint8_t sector[512];
+    uint8_t sector[512] __attribute__((aligned(4)));
     if (ata_read_sectors(0, 1, sector)) {
         printf("[MAIN] MBR: %s\n",
                (sector[510] == 0x55 && sector[511] == 0xAA) ? "valid 0x55AA" : "no signature");
@@ -238,6 +239,7 @@ int main(void) {
 
     for (;;) {
         tud_task();
+        msc_service_prefetch();
         service_idle_standby();
     }
 }

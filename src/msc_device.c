@@ -66,6 +66,19 @@ static bool bad_cache_overlaps(uint32_t lba, uint32_t count) {
     return false;
 }
 
+// ---- Sequential read prefetch ----
+// TinyUSB MSC serializes "read chunk from drive" then "send chunk over USB",
+// leaving the drive idle while USB transmits (the RP2040 USB controller
+// streams a queued transfer from IRQ context without needing tud_task).
+// When a sequential read stream is detected, the main loop prefetches the
+// next chunk from the drive while the previous one is still going out over
+// USB, overlapping the two instead of paying for them back-to-back.
+#define LBA_NONE UINT32_MAX
+static uint8_t prefetch_buf[MSC_CHUNK_SECTORS * MSC_BLOCK_SIZE] __attribute__((aligned(4)));
+static uint32_t prefetch_lba = LBA_NONE;   // LBA of prefetch_buf[0]; LBA_NONE = empty
+static uint32_t prefetch_want = LBA_NONE;  // armed prefetch target for the main loop
+static uint32_t last_read_end = LBA_NONE;  // end LBA of the previous host read
+
 // Activity tracking for idle standby + power gating
 static volatile uint32_t last_activity_ms = 0;
 static volatile bool drive_spinning = true;
@@ -249,6 +262,9 @@ static int32_t msc_transfer(uint32_t lba, void *buffer, uint32_t bufsize, bool i
         return -1;
     }
     if (is_write) {
+        // Prefetched data may be about to go stale — drop it.
+        prefetch_lba = LBA_NONE;
+        prefetch_want = LBA_NONE;
         led_tx_on();
     } else {
         led_rx_on();
@@ -266,6 +282,13 @@ static int32_t msc_transfer(uint32_t lba, void *buffer, uint32_t bufsize, bool i
             uint32_t bad = msc_fallback_sectors(lba + done, chunk_buf, chunk, is_write);
             total_bad += bad;
             if (bad > 0) break;
+        } else if (!is_write && prefetch_lba != LBA_NONE &&
+                   lba + done >= prefetch_lba &&
+                   lba + done + chunk <= prefetch_lba + MSC_CHUNK_SECTORS) {
+            // Served from the prefetch buffer (already read + CRC-verified)
+            memcpy(chunk_buf,
+                   prefetch_buf + (lba + done - prefetch_lba) * MSC_BLOCK_SIZE,
+                   chunk * MSC_BLOCK_SIZE);
         } else {
             bool ok = is_write
                 ? ata_write_sectors(lba + done, (uint8_t)chunk, chunk_buf)
@@ -305,7 +328,37 @@ static int32_t msc_transfer(uint32_t lba, void *buffer, uint32_t bufsize, bool i
         }
         return -1;
     }
+
+    if (!is_write) {
+        // Arm prefetch once a sequential read stream is detected: the main
+        // loop reads the next chunk while this one streams out over USB.
+        if (lba == last_read_end)
+            prefetch_want = lba + count;
+        last_read_end = lba + count;
+    }
     return (int32_t)(count * MSC_BLOCK_SIZE);
+}
+
+// Called from the main loop: fetch the armed prefetch chunk, overlapping the
+// drive read with the in-flight USB transfer of the previous chunk.
+void msc_service_prefetch(void) {
+    if (prefetch_want == LBA_NONE || !drive_ready || power_gated) return;
+
+    uint32_t want = prefetch_want;
+    prefetch_want = LBA_NONE;
+
+    if (want == prefetch_lba) return;                              // already cached
+    if (want + MSC_CHUNK_SECTORS > drive_sectors) return;          // partial chunks read direct
+    if (bad_cache_overlaps(want, MSC_CHUNK_SECTORS)) return;       // strict path handles these
+
+    prefetch_lba = LBA_NONE;
+    if (ata_read_sectors(want, MSC_CHUNK_SECTORS, prefetch_buf)) {
+        prefetch_lba = want;
+    } else {
+        // Leave error reporting to the direct read path when the host asks —
+        // just put the drive back into a clean state.
+        ata_error_recovery();
+    }
 }
 
 // Invoked when received Test Unit Ready command
@@ -328,10 +381,12 @@ bool tud_msc_start_stop_cb(uint8_t lun, uint8_t power_condition,
                             bool start, bool load_eject) {
     (void)lun;
     (void)power_condition;
-    if (load_eject) {
-        if (!start) {
-            // Eject — could send STANDBY_IMMEDIATE
-            printf("[MSC] Eject requested\n");
+    if (load_eject && !start) {
+        // Eject / safely-remove: flush + park + power down now instead of
+        // waiting for the idle timeout. Next I/O wakes the drive as usual.
+        printf("[MSC] Eject requested\n");
+        if (drive_spinning && !power_gated) {
+            msc_power_gate();
         }
     }
     return true;
@@ -371,6 +426,20 @@ int32_t tud_msc_scsi_cb(uint8_t lun, uint8_t const scsi_cmd[16],
     (void)lun;
     (void)buffer;
     (void)bufsize;
+
+    switch (scsi_cmd[0]) {
+        case 0x35:   // SYNCHRONIZE CACHE (10) — issued by Linux on sync/unmount
+        case 0x91: { // SYNCHRONIZE CACHE (16)
+            // If the drive is power gated, STANDBY IMMEDIATE already flushed it.
+            if (drive_spinning && !power_gated && !ata_flush_cache()) {
+                tud_msc_set_sense(lun, 0x03, 0x0C, 0x00);  // MEDIUM ERROR, Write Error
+                return -1;
+            }
+            return 0;
+        }
+        default:
+            break;
+    }
 
     printf("[MSC] Unhandled SCSI cmd: 0x%02X\n", scsi_cmd[0]);
 

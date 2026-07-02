@@ -44,6 +44,7 @@
 #define ATA_CMD_WRITE_SEC   0x30
 #define ATA_CMD_SMART       0xB0
 #define ATA_CMD_STANDBY_IMM 0xE0
+#define ATA_CMD_FLUSH_CACHE 0xE7
 
 // SMART sub-commands
 #define SMART_READ_DATA     0xD0

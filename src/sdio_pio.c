@@ -327,108 +327,98 @@ bool sdio_pio_deselect_card(void) {
 }
 
 // ============================================================
-// CMD53 read
+// CMD53 read — pipelined per-block transfers
 // ============================================================
-// Read a single block's data phase via PIO DAT read (assumes DAT program loaded)
-// Returns true on success. buf must hold 512 bytes.
-static bool pio_dat_read_one_block(uint8_t *buf) {
-    uint32_t data_nibbles = 512 * 2;       // 1024
-    uint32_t read_nibbles = data_nibbles + 16 + 1;  // +CRC+end
-    uint32_t data_words = 512 / 4;         // 128
+// The DMA channel uses BSWAP so nibble-packed words land in memory already in
+// byte order (hi nibble first per byte) — no CPU repack pass needed. Blocks are
+// pipelined: while block N+1 streams on the wire (PIO+DMA run autonomously),
+// the CPU verifies block N's CRC16.
 
-    // Reset SM for this block
+// Kick off the data phase for one 512-byte block (assumes DAT read program loaded)
+static void dat_read_start_block(uint8_t *buf) {
+    uint32_t read_nibbles = 512 * 2 + 16 + 1;  // data + CRC + end
+
     pio_sm_set_enabled(pio, SM, false);
     pio_sm_clear_fifos(pio, SM);
     pio_sm_restart(pio, SM);
     pio_sm_exec(pio, SM, pio_encode_jmp(FIXED_OFFSET));
 
-    // DMA: PIO RX → buffer
+    // DMA: PIO RX → buffer, byte-swapped into final byte order
     dma_channel_config dc = dma_channel_get_default_config(dma_chan);
     channel_config_set_transfer_data_size(&dc, DMA_SIZE_32);
     channel_config_set_read_increment(&dc, false);
     channel_config_set_write_increment(&dc, true);
+    channel_config_set_bswap(&dc, true);
     channel_config_set_dreq(&dc, pio_get_dreq(pio, SM, false));
-    dma_channel_configure(dma_chan, &dc, buf, &pio->rxf[SM], data_words, false);
+    dma_channel_configure(dma_chan, &dc, buf, &pio->rxf[SM], 512 / 4, false);
 
     pio_sm_put_blocking(pio, SM, read_nibbles - 1);
     dma_channel_start(dma_chan);
     pio_sm_set_enabled(pio, SM, true);
+}
 
-    // Wait for DMA (data nibbles captured)
+// Wait for the in-flight block to finish and collect its CRC words.
+// Returns false on timeout or if the CRC words never arrived.
+static bool dat_read_finish_block(uint32_t crc_words[3]) {
     uint32_t t0 = to_ms_since_boot(get_absolute_time());
     while (dma_channel_is_busy(dma_chan)) {
         if ((to_ms_since_boot(get_absolute_time()) - t0) > 5000) {
             dma_channel_abort(dma_chan);
             pio_sm_set_enabled(pio, SM, false);
+            printf("[PIO] DAT read DMA timeout\n");
             return false;
         }
         tight_loop_contents();
     }
 
-    // SM is still running — clocking CRC+end nibbles into FIFO.
-    // Wait for SM to finish all nibbles (stalls at `pull block` when done).
-    // The SM pushes autopush words + explicit push. Once TX FIFO is empty
-    // AND SM has stalled on pull, it's done. We detect this by waiting for
-    // the SM to have consumed all clocks — just wait for FIFO to fill with
-    // the remaining CRC words, then drain them.
+    // SM is still clocking CRC+end nibbles into the FIFO; it stalls at
+    // `pull block` (PC = offset 0) once all nibbles are read.
+    bool stalled = false;
     uint32_t t1 = to_ms_since_boot(get_absolute_time());
     while ((to_ms_since_boot(get_absolute_time()) - t1) < 100) {
-        // SM stalls on `pull block` when X reaches 0 (all nibbles read).
-        // Check if SM PC is at offset+0 (pull instruction = first instruction)
-        uint32_t pc = pio_sm_get_pc(pio, SM);
-        if (pc == FIXED_OFFSET) break;  // SM finished, stalled at pull
+        if (pio_sm_get_pc(pio, SM) == FIXED_OFFSET) { stalled = true; break; }
         tight_loop_contents();
     }
     pio_sm_set_enabled(pio, SM, false);
-
-    // Repack nibbles → bytes in-place
-    uint32_t *words = (uint32_t *)buf;
-    for (int w = data_words - 1; w >= 0; w--) {
-        uint32_t word = words[w];
-        uint8_t *dst = buf + w * 4;
-        dst[0] = ((word >> 28) << 4) | ((word >> 24) & 0x0F);
-        dst[1] = (((word >> 20) & 0x0F) << 4) | ((word >> 16) & 0x0F);
-        dst[2] = (((word >> 12) & 0x0F) << 4) | ((word >> 8) & 0x0F);
-        dst[3] = (((word >> 4) & 0x0F) << 4) | (word & 0x0F);
+    if (!stalled) {
+        printf("[PIO] DAT read SM stall timeout\n");
+        return false;
     }
 
-    // Read CRC nibbles from FIFO (2 words = 16 CRC nibbles, then 1 partial with end bit)
-    // Each CRC nibble is: bit3=DAT3, bit2=DAT2, bit1=DAT1, bit0=DAT0
-    uint32_t crc_words[3] = {0, 0, 0};
     int crc_word_count = 0;
     while (!pio_sm_is_rx_fifo_empty(pio, SM) && crc_word_count < 3)
         crc_words[crc_word_count++] = pio_sm_get(pio, SM);
-
-    // Drain any remaining
     while (!pio_sm_is_rx_fifo_empty(pio, SM))
         (void)pio_sm_get(pio, SM);
 
-    // Verify CRC16 per DAT line if we got at least the 2 CRC words
-    if (crc_word_count >= 2) {
-        // Extract received CRC16 per line from the 16 nibbles (2 words × 8 nibbles)
-        // Nibbles are packed MSB-first: word0 has CRC bits 15..8, word1 has bits 7..0
-        // Compute expected CRC for all 4 lines in one pass (LUT-accelerated)
-        uint16_t expected[4];
-        crc16_all_lines(buf, 512, expected);
+    if (crc_word_count < 2) {
+        printf("[PIO] DAT read missing CRC words (%d)\n", crc_word_count);
+        return false;
+    }
+    return true;
+}
 
-        for (int line = 0; line < 4; line++) {
-            uint16_t received_crc = 0;
-            for (int n = 0; n < 8; n++) {
-                uint8_t nibble = (crc_words[0] >> (28 - n * 4)) & 0xF;
-                received_crc = (received_crc << 1) | ((nibble >> line) & 1);
-            }
-            for (int n = 0; n < 8; n++) {
-                uint8_t nibble = (crc_words[1] >> (28 - n * 4)) & 0xF;
-                received_crc = (received_crc << 1) | ((nibble >> line) & 1);
-            }
-            if (received_crc != expected[line]) {
-                printf("[PIO] CRC16 MISMATCH DAT%d: rx=0x%04X exp=0x%04X\n",
-                       line, received_crc, expected[line]);
-                return false;
-            }
+// Verify per-line CRC16 for one block against the received CRC nibbles
+static bool dat_read_verify_crc(const uint8_t *buf, const uint32_t crc_words[3]) {
+    uint16_t expected[4];
+    crc16_all_lines(buf, 512, expected);
+
+    for (int line = 0; line < 4; line++) {
+        uint16_t received_crc = 0;
+        for (int n = 0; n < 8; n++) {
+            uint8_t nibble = (crc_words[0] >> (28 - n * 4)) & 0xF;
+            received_crc = (received_crc << 1) | ((nibble >> line) & 1);
+        }
+        for (int n = 0; n < 8; n++) {
+            uint8_t nibble = (crc_words[1] >> (28 - n * 4)) & 0xF;
+            received_crc = (received_crc << 1) | ((nibble >> line) & 1);
+        }
+        if (received_crc != expected[line]) {
+            printf("[PIO] CRC16 MISMATCH DAT%d: rx=0x%04X exp=0x%04X\n",
+                   line, received_crc, expected[line]);
+            return false;
         }
     }
-
     return true;
 }
 
@@ -451,10 +441,26 @@ bool sdio_pio_cmd53_read_block(uint8_t fn, uint32_t addr, uint8_t *buf,
     pio_sm_set_enabled(pio, SM, false);
     load_dat_read();
 
-    // Read each block individually — PIO wait_dat_start handles inter-block gaps
+    dat_read_start_block(buf);
     for (uint16_t blk = 0; blk < block_count; blk++) {
-        if (!pio_dat_read_one_block(buf + (uint32_t)blk * 512)) {
+        uint8_t *cur = buf + (uint32_t)blk * 512;
+        uint32_t crc_words[3];
+
+        if (!dat_read_finish_block(crc_words)) {
             printf("[PIO] DAT read fail blk=%d/%d\n", blk, block_count);
+            load_cmd();
+            return false;
+        }
+
+        // Start the next block on the wire before verifying this one —
+        // the CRC check runs while the card streams the next block.
+        if (blk + 1 < block_count)
+            dat_read_start_block(cur + 512);
+
+        if (!dat_read_verify_crc(cur, crc_words)) {
+            printf("[PIO] DAT read fail blk=%d/%d\n", blk, block_count);
+            dma_channel_abort(dma_chan);
+            pio_sm_set_enabled(pio, SM, false);
             load_cmd();
             return false;
         }
@@ -466,72 +472,77 @@ bool sdio_pio_cmd53_read_block(uint8_t fn, uint32_t addr, uint8_t *buf,
 }
 
 // ============================================================
-// CMD53 write (per-block CRC16, DMA to PIO)
+// CMD53 write (per-block CRC16, DMA to PIO) — pipelined stream build
 // ============================================================
-// Buffer for one block: start(1) + data(1024) + CRC(16) + stop(1) = 1042 nibbles
-// = 131 words
-static uint32_t write_stream_buf[((512 * 2 + 16 + 2 + 7) / 8)];
+// One block's nibble stream: start(1) + data(1024) + CRC(16) + stop(1)
+// = 1042 nibbles = 131 words. Two buffers so block N+1's stream is built
+// while block N is on the wire / the card is busy-programming.
+#define WRITE_STREAM_NIBBLES (1u + 512u * 2u + 16u + 1u)
+#define WRITE_STREAM_WORDS   ((WRITE_STREAM_NIBBLES + 7u) / 8u)
+static uint32_t write_stream_buf[2][WRITE_STREAM_WORDS];
 
-// Write a single block's data phase via PIO DAT write
-// Returns true on success. data must point to 512 bytes.
-static bool pio_dat_write_one_block(const uint8_t *data) {
+// Build the full nibble stream for one 512-byte block.
+// data must be 4-byte aligned (MSC/prefetch buffers are).
+static void build_write_stream(const uint8_t *data, uint32_t *w) {
     // Precompute CRC16 per DAT line for this block (LUT-accelerated)
     uint16_t crc_dat[4];
     crc16_all_lines(data, 512, crc_dat);
 
-    // Build nibble stream: start(1) + data(1024) + CRC16(16) + stop(1)
-    uint32_t nibble_count = 1 + 512 * 2 + 16 + 1;
-    uint32_t word_count = (nibble_count + 7) / 8;
-    memset(write_stream_buf, 0, word_count * 4);
-
-    #define SET_NIBBLE(pos, val) do { \
-        uint32_t wi = (pos) / 8; \
-        uint32_t shift = 28 - ((pos) % 8) * 4; \
-        write_stream_buf[wi] |= ((uint32_t)(val) & 0xF) << shift; \
-    } while(0)
-
-    uint32_t ni = 0;
-    SET_NIBBLE(ni, 0x0); ni++;
-    for (uint32_t i = 0; i < 512; i++) {
-        SET_NIBBLE(ni, (data[i] >> 4) & 0x0F); ni++;
-        SET_NIBBLE(ni, data[i] & 0x0F); ni++;
+    // Data nibbles go out MSB-first, offset by the 4-bit start nibble:
+    // each output word = previous word's leftover low nibble + 7 new nibbles.
+    const uint32_t *src = (const uint32_t *)data;
+    uint32_t carry = 0x0;  // first carry slot doubles as the start nibble (0)
+    for (int i = 0; i < 128; i++) {
+        uint32_t be = __builtin_bswap32(src[i]);
+        w[i] = (carry << 28) | (be >> 4);
+        carry = be & 0xF;
     }
+
+    // Tail: final data nibble + 16 CRC nibbles + end nibble
+    uint8_t tail[18];
+    tail[0] = (uint8_t)carry;
     for (int bit = 15; bit >= 0; bit--) {
         uint8_t nibble = 0;
         if ((crc_dat[3] >> bit) & 1) nibble |= 0x08;
         if ((crc_dat[2] >> bit) & 1) nibble |= 0x04;
         if ((crc_dat[1] >> bit) & 1) nibble |= 0x02;
         if ((crc_dat[0] >> bit) & 1) nibble |= 0x01;
-        SET_NIBBLE(ni, nibble); ni++;
+        tail[1 + (15 - bit)] = nibble;
     }
-    SET_NIBBLE(ni, 0xF); ni++;
-    #undef SET_NIBBLE
+    tail[17] = 0xF;
 
-    // Reset SM for this block
+    w[128] = w[129] = w[130] = 0;
+    for (int k = 0; k < 18; k++)
+        w[128 + k / 8] |= ((uint32_t)tail[k] & 0xF) << (28 - (k % 8) * 4);
+}
+
+// Kick off the data phase for one block (assumes DAT write program loaded)
+static void dat_write_start_block(const uint32_t *stream) {
     pio_sm_set_enabled(pio, SM, false);
     pio_sm_clear_fifos(pio, SM);
     pio_sm_restart(pio, SM);
     pio_sm_set_consecutive_pindirs(pio, SM, SDIO_DAT0_PIN, 4, true);
     pio_sm_exec(pio, SM, pio_encode_jmp(FIXED_OFFSET));
 
-    // DMA: write_stream → PIO TX
+    // DMA: stream → PIO TX
     dma_channel_config dc = dma_channel_get_default_config(dma_chan);
     channel_config_set_transfer_data_size(&dc, DMA_SIZE_32);
     channel_config_set_read_increment(&dc, true);
     channel_config_set_write_increment(&dc, false);
     channel_config_set_dreq(&dc, pio_get_dreq(pio, SM, true));
-    dma_channel_configure(dma_chan, &dc, &pio->txf[SM], write_stream_buf,
-                          word_count, false);
+    dma_channel_configure(dma_chan, &dc, &pio->txf[SM], stream,
+                          WRITE_STREAM_WORDS, false);
 
     // Clear IRQ flag before starting
     pio->irq = (1u << 0);
 
-    // Push nibble count, start DMA + SM
-    pio_sm_put_blocking(pio, SM, nibble_count - 1);
+    pio_sm_put_blocking(pio, SM, WRITE_STREAM_NIBBLES - 1);
     dma_channel_start(dma_chan);
     pio_sm_set_enabled(pio, SM, true);
+}
 
-    // Wait for IRQ 0 (write complete + card CRC status received + busy cleared)
+// Wait for IRQ 0 (write complete + card CRC status received + busy cleared)
+static bool dat_write_finish_block(void) {
     uint32_t t0 = to_ms_since_boot(get_absolute_time());
     while (!(pio->irq & (1u << 0))) {
         if ((to_ms_since_boot(get_absolute_time()) - t0) > 10000) {
@@ -570,9 +581,16 @@ bool sdio_pio_cmd53_write_block(uint8_t fn, uint32_t addr, const uint8_t *buf,
     pio_sm_set_enabled(pio, SM, false);
     load_dat_write();
 
-    // Write each block individually (each has its own CRC + busy wait)
+    // Pipelined: build block N+1's stream while block N transfers + programs
+    build_write_stream(buf, write_stream_buf[0]);
     for (uint16_t blk = 0; blk < block_count; blk++) {
-        if (!pio_dat_write_one_block(buf + (uint32_t)blk * 512)) {
+        dat_write_start_block(write_stream_buf[blk & 1]);
+
+        if (blk + 1 < block_count)
+            build_write_stream(buf + (uint32_t)(blk + 1) * 512,
+                               write_stream_buf[(blk + 1) & 1]);
+
+        if (!dat_write_finish_block()) {
             printf("[PIO] DAT write fail blk=%d/%d\n", blk, block_count);
             pio_sm_set_consecutive_pindirs(pio, SM, SDIO_DAT0_PIN, 4, false);
             load_cmd();
@@ -646,11 +664,10 @@ static bool sdio_pio_card_init_once(uint16_t *out_rca) {
     // CMD5 probe (no argument — discovers card OCR)
     if (!sdio_pio_send_cmd(5, 0x00000000, &resp)) return false;
 
-    uint32_t card_ocr = resp & 0x00FFFFFF;
     // Follow the N91 traces here: probe may report 0x1F8000, but the working
     // host negotiation window is 0x001C0000 rather than mirroring the full
     // probed OCR mask.
-    uint32_t host_ocr = (card_ocr & 0x001C0000) ? 0x001C0000 : 0x001C0000;
+    uint32_t host_ocr = 0x001C0000;
 
     // CMD5 with OCR until card signals ready (bit 31)
     if (!sdio_pio_wait_ready_ocr(host_ocr, &resp)) return false;

@@ -31,6 +31,9 @@ void ata_smart_dump(void);
 // Power management
 bool ata_standby_immediate(void);
 
+// FLUSH CACHE (0xE7); returns true if flushed or unsupported (treated as no-op)
+bool ata_flush_cache(void);
+
 // Error recovery — clear drive error state after a failed command.
 // Call after DRQ timeout / read/write failure before retrying a different LBA.
 void ata_error_recovery(void);
