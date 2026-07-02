@@ -37,7 +37,7 @@ Fully functional USB mass storage with PIO-accelerated reads/writes and idle pow
 | Metric | Value |
 |--------|-------|
 | Read speed | ~985 kB/s (USB full-speed limited) |
-| Write speed | ~700 kB/s (synchronous write-through) |
+| Write speed | ~920 kB/s (USB full-speed limited, advertised write cache) |
 | Raw SDIO-side speed | ~2.35 MB/s read / ~2.15 MB/s write (drive-limited) |
 | Capacity | 3.75 GB (7,862,400 sectors) |
 | Filesystem | FAT32 verified (mount/unmount/fsck clean) |
@@ -54,7 +54,7 @@ USB Host ←→ USB MSC (TinyUSB) ←→ ATA Layer ←→ SDIO Layer (PIO) ←�
 
 The firmware has four layers:
 
-1. **USB MSC** (`msc_device.c`) — TinyUSB Mass Storage Class. Translates SCSI READ(10)/WRITE(10) into ATA sector operations. 32 KB EP buffer, batching up to 64 sectors per USB transfer. Sequential reads are overlapped with USB: a prefetcher fetches the next chunk from the drive while the previous one streams to the host. Writes are synchronous write-through (the device reports no write cache, so errors must land on the exact command — never deferred).
+1. **USB MSC** (`msc_device.c`) — TinyUSB Mass Storage Class. Translates SCSI READ(10)/WRITE(10) into ATA sector operations. 32 KB EP buffer, batching up to 64 sectors per USB transfer. Drive I/O is overlapped with USB in both directions, like a real ATA-USB bridge with a caching disk: a sequential-read prefetcher fetches the next chunk while the previous one streams to the host, and writes are staged and flushed while USB receives the next piece. The device advertises its write cache (Caching mode page, WCE=1 — hosts report "Write cache: enabled" and issue SYNCHRONIZE CACHE at fsync/unmount/suspend, which the firmware honors). A failed background flush surfaces as MEDIUM ERROR on the next WRITE or SYNCHRONIZE CACHE; writes to known-bad sectors take a strict synchronous path.
 
 2. **ATA-over-SDIO** (`ata_sdio.c`) — Implements ATA commands (IDENTIFY, READ SECTORS, WRITE SECTORS) by writing to ATA registers mapped into SDIO function 1 address space via CMD52, and transferring sector data via CMD53. 3-tier retry logic at CMD, data, and ATA levels.
 
@@ -329,7 +329,7 @@ HW specifically designed for this drive is under /hardware!
 | v0.9 | 475 kB/s | 371 kB/s | 64-sector chunks, CRC16 read verification |
 | v0.10 | 453 kB/s | 329 kB/s | LED remap, HDD EN pin, UART on GP12/GP13 |
 | v0.11 | ~450 kB/s | ~340 kB/s | HDD power gate, PIO wake, bad sector sense, USB suspend |
-| **v0.12** | **~985 kB/s** | **~700 kB/s** | **Read prefetch overlaps USB, pipelined PIO blocks, bswap DMA, 4-cycle PIO loops, SYNCHRONIZE CACHE, SBC-style bad-sector semantics (write-through, write-repair)** |
+| **v0.12** | **~985 kB/s** | **~920 kB/s** | **Drive/USB overlap (read prefetch + advertised write cache with write-behind), pipelined PIO blocks, bswap DMA, 4-cycle PIO loops, SBC-style bad-sector semantics (write-repair), vendored TinyUSB MSC driver** |
 
 ## Testing
 

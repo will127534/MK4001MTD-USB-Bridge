@@ -1,0 +1,81 @@
+--- /home/pi/pico/pico-sdk/lib/tinyusb/src/class/msc/msc_device.c	2026-07-02 07:41:37.386176324 +0000
++++ lib/tinyusb_patched/msc_device.c	2026-07-02 07:43:37.147118552 +0000
+@@ -32,7 +32,7 @@
+ #include "device/usbd.h"
+ #include "device/usbd_pvt.h"
+ 
+-#include "msc_device.h"
++#include "class/msc/msc_device.h" // PATCHED: full path — the bridge has its own msc_device.h
+ 
+ // Level where CFG_TUSB_DEBUG must be at least for this driver is logged
+ #ifndef CFG_TUD_MSC_LOG_LEVEL
+@@ -698,24 +698,32 @@
+     break;
+ 
+     case SCSI_CMD_MODE_SENSE_6: {
+-      scsi_mode_sense6_resp_t mode_resp =
+-      {
+-        .data_len = 3,
+-        .medium_type = 0,
+-        .write_protected = false,
+-        .reserved = 0,
+-        .block_descriptor_len = 0 // no block descriptor are included
+-      };
++      // PATCHED (mk4001_bridge): report a Caching mode page with WCE=1 so the
++      // host knows the device has a write cache and issues SYNCHRONIZE CACHE
++      // at integrity points (fsync/unmount/suspend). Response length beyond
++      // the host allocation length is truncated by the caller.
++      uint8_t const page_code = scsi_cmd[2] & 0x3F;
++      uint8_t mode_buf[4 + 20];
++      memset(mode_buf, 0, sizeof(mode_buf));
+ 
+       bool writable = true;
+       if (tud_msc_is_writable_cb) {
+         writable = tud_msc_is_writable_cb(lun);
+       }
++      mode_buf[2] = writable ? 0x00 : 0x80; // device-specific: WP bit
++      mode_buf[3] = 0;                      // no block descriptor
+ 
+-      mode_resp.write_protected = !writable;
++      resplen = 4;
++      if (page_code == 0x08 || page_code == 0x3F) {
++        uint8_t* pg = mode_buf + 4;
++        pg[0] = 0x08; // Caching mode page
++        pg[1] = 0x12; // page length (18)
++        pg[2] = 0x04; // WCE=1
++        resplen += 20;
++      }
++      mode_buf[0] = (uint8_t)(resplen - 1); // mode data length (excl. itself)
+ 
+-      resplen = sizeof(mode_resp);
+-      TU_VERIFY(0 == tu_memcpy_s(buffer, bufsize, &mode_resp, (size_t) resplen));
++      TU_VERIFY(0 == tu_memcpy_s(buffer, bufsize, mode_buf, (size_t) resplen));
+     }
+     break;
+ 
+@@ -771,8 +779,10 @@
+     // negative means error -> endpoint is stalled & status in CSW set to failed
+     TU_LOG_DRV("  tud_msc_read10_cb() return -1\r\n");
+ 
+-    // set sense
+-    set_sense_medium_not_present(p_cbw->lun);
++    // set sense only if application didn't already set one
++    if (_mscd_itf.sense_key == 0) {
++      set_sense_medium_not_present(p_cbw->lun);
++    }
+ 
+     fail_scsi_op(rhport, p_msc, MSC_CSW_STATUS_FAILED);
+   } else if (nbytes == 0) {
+@@ -827,8 +837,10 @@
+     // update actual byte before failed
+     p_msc->xferred_len += xferred_bytes;
+ 
+-    // Set sense
+-    set_sense_medium_not_present(p_cbw->lun);
++    // Set sense only if application didn't already set one
++    if (_mscd_itf.sense_key == 0) {
++      set_sense_medium_not_present(p_cbw->lun);
++    }
+ 
+     fail_scsi_op(rhport, p_msc, MSC_CSW_STATUS_FAILED);
+   } else {

@@ -115,10 +115,19 @@ static uint32_t prefetch_lba = LBA_NONE;   // LBA of prefetch_buf[0]; LBA_NONE =
 static uint32_t prefetch_want = LBA_NONE;  // armed prefetch target for the main loop
 static uint32_t last_read_end = LBA_NONE;  // end LBA of the previous host read
 
-// Writes are synchronous (write-through): the device reports no Caching mode
-// page, so hosts assume write-through semantics — a write error must be a
-// current error on the exact command, never deferred. That rules out
-// write-behind staging on the write path.
+// ---- Write-behind staging ----
+// The device advertises WCE=1 (Caching mode page, patched TinyUSB copy in
+// lib/tinyusb_patched/), so the host knows writes may be cached and issues
+// SYNCHRONIZE CACHE at integrity points — standard write-back semantics.
+// A WRITE10 piece is staged here and flushed from the main loop while
+// TinyUSB receives the next piece over USB (IRQ-driven), overlapping drive
+// and USB time. A failed background flush surfaces as a MEDIUM ERROR on the
+// next WRITE or SYNCHRONIZE CACHE. Reads and power gating flush first.
+static uint8_t wb_buf[MSC_CHUNK_SECTORS * MSC_BLOCK_SIZE] __attribute__((aligned(4)));
+static uint32_t wb_lba = 0;
+static uint32_t wb_count = 0;
+static volatile bool wb_pending = false;
+static bool wb_deferred_error = false;
 
 // Activity tracking for idle standby + power gating
 static volatile uint32_t last_activity_ms = 0;
@@ -200,7 +209,10 @@ uint32_t msc_get_last_activity_ms(void) { return last_activity_ms; }
 bool msc_is_drive_spinning(void) { return drive_spinning && idle_tracking_active; }
 bool msc_is_power_gated(void) { return power_gated; }
 
+static void wb_flush(void);
+
 void msc_power_gate(void) {
+    wb_flush();  // nothing staged may outlive the power rail
     printf("[PWR] STANDBY IMMEDIATE → power gate\n");
     ata_standby_immediate();
     sleep_ms(50);
@@ -295,10 +307,39 @@ static uint32_t msc_fallback_sectors(uint32_t lba, uint8_t *buf,
     return 0;
 }
 
+// Flush the staged write-behind chunk to the drive (main loop or callbacks).
+static void wb_flush(void) {
+    if (!wb_pending) return;
+    wb_pending = false;
+
+    led_tx_on();
+    uint32_t bad = 0;
+    if (!ata_write_sectors(wb_lba, (uint8_t)wb_count, wb_buf)) {
+        printf("[MSC] WB write failed at LBA %lu+%lu, falling back to per-sector\n",
+               wb_lba, wb_count);
+        ata_error_recovery();
+        bad = msc_fallback_sectors(wb_lba, wb_buf, wb_count, true);
+    }
+    led_tx_off();
+
+    if (bad > 0) {
+        printf("[MSC] Deferred write error LBA=%lu count=%lu\n", wb_lba, wb_count);
+        led_block_issue_flash();
+        wb_deferred_error = true;
+    }
+}
+
+void msc_service_write_behind(void) {
+    wb_flush();
+}
+
 static int32_t msc_transfer(uint32_t lba, void *buffer, uint32_t bufsize, bool is_write) {
     uint32_t count = msc_transfer_sector_count(bufsize);
     uint32_t done = 0;
     uint32_t total_bad = 0;
+
+    // Read-after-write consistency: complete any staged write first
+    wb_flush();
 
     if (!msc_transfer_in_range(lba, count)) {
         tud_msc_set_sense(0, SCSI_SENSE_ILLEGAL_REQUEST, 0x21, 0x00);
@@ -468,9 +509,42 @@ int32_t tud_msc_write10_cb(uint8_t lun, uint32_t lba, uint32_t offset,
         return -1;
     }
 
-    // Synchronous write-through: status reflects the medium, errors land on
-    // this exact command.
-    return msc_transfer(lba, buffer, bufsize, true);
+    // Finish the previous staged chunk — its drive flush overlapped this
+    // piece's USB reception — and surface any deferred error now.
+    wb_flush();
+    if (wb_deferred_error) {
+        wb_deferred_error = false;
+        tud_msc_set_sense(lun, 0x03, 0x0C, 0x00);  // MEDIUM ERROR, Write Error
+        return -1;
+    }
+
+    uint32_t count = msc_transfer_sector_count(bufsize);
+    if (!msc_transfer_in_range(lba, count)) {
+        tud_msc_set_sense(lun, SCSI_SENSE_ILLEGAL_REQUEST, 0x21, 0x00);
+        return -1;
+    }
+
+    // Writes touching cached-bad LBAs take the strict synchronous path so a
+    // still-failing sector reports on this exact command (and a successful
+    // write repairs it and clears the cache).
+    if (count > MSC_CHUNK_SECTORS || bad_cache_overlaps(lba, count)) {
+        return msc_transfer(lba, buffer, bufsize, true);
+    }
+
+    msc_touch_activity("WRITE");
+    if (power_gated) {
+        tud_msc_set_sense(lun, SCSI_SENSE_NOT_READY, 0x04, 0x01);
+        return -1;
+    }
+
+    // Stage and return — the main loop flushes while USB receives the next piece
+    prefetch_lba = LBA_NONE;
+    prefetch_want = LBA_NONE;
+    memcpy(wb_buf, buffer, count * MSC_BLOCK_SIZE);
+    wb_lba = lba;
+    wb_count = count;
+    wb_pending = true;
+    return (int32_t)(count * MSC_BLOCK_SIZE);
 }
 
 // Invoked when received SCSI command not handled above
@@ -483,7 +557,12 @@ int32_t tud_msc_scsi_cb(uint8_t lun, uint8_t const scsi_cmd[16],
     switch (scsi_cmd[0]) {
         case 0x35:   // SYNCHRONIZE CACHE (10) — issued by Linux on sync/unmount
         case 0x91: { // SYNCHRONIZE CACHE (16)
-            // Writes are synchronous; only the drive's own cache may hold data.
+            wb_flush();
+            if (wb_deferred_error) {
+                wb_deferred_error = false;
+                tud_msc_set_sense(lun, 0x03, 0x0C, 0x00);  // MEDIUM ERROR, Write Error
+                return -1;
+            }
             // If the drive is power gated, STANDBY IMMEDIATE already flushed it.
             if (drive_spinning && !power_gated && !ata_flush_cache()) {
                 tud_msc_set_sense(lun, 0x03, 0x0C, 0x00);  // MEDIUM ERROR, Write Error
