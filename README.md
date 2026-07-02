@@ -36,12 +36,13 @@ Fully functional USB mass storage with PIO-accelerated reads/writes and idle pow
 
 | Metric | Value |
 |--------|-------|
-| Read speed | 550 kB/s |
-| Write speed | 364 kB/s |
+| Read speed | ~985 kB/s (USB full-speed limited) |
+| Write speed | ~925 kB/s (USB full-speed limited) |
+| Raw SDIO-side speed | ~2.35 MB/s read / ~2.15 MB/s write (drive-limited) |
 | Capacity | 3.75 GB (7,862,400 sectors) |
 | Filesystem | FAT32 verified (mount/unmount/fsck clean) |
-| Data integrity | Write+readback MD5 verified |
-| Idle standby | 1 second timeout → STANDBY IMMEDIATE |
+| Data integrity | Write+readback verified; per-block CRC16 on all 4 DAT lines |
+| Idle standby | 5 s idle or USB suspend → STANDBY IMMEDIATE + power gate |
 
 ## How It Works
 
@@ -53,16 +54,16 @@ USB Host ←→ USB MSC (TinyUSB) ←→ ATA Layer ←→ SDIO Layer (PIO) ←�
 
 The firmware has four layers:
 
-1. **USB MSC** (`msc_device.c`) — TinyUSB Mass Storage Class. Translates SCSI READ(10)/WRITE(10) into ATA sector operations. EP buffer is 8192 bytes, batching up to 16 sectors per USB transfer. Activity LEDs on GP9 (TX/write) and GP10 (RX/read). Tracks last I/O timestamp for idle power management.
+1. **USB MSC** (`msc_device.c`) — TinyUSB Mass Storage Class. Translates SCSI READ(10)/WRITE(10) into ATA sector operations. 32 KB EP buffer, batching up to 64 sectors per USB transfer. Drive I/O is overlapped with USB transfers: a sequential-read prefetcher fetches the next chunk while the previous one streams to the host, and writes are staged and flushed from the main loop while USB receives the next piece (write-behind; deferred MEDIUM ERROR on the next command if a background flush fails). Known-bad sectors always use a strict synchronous path so the medium error lands on the exact command.
 
 2. **ATA-over-SDIO** (`ata_sdio.c`) — Implements ATA commands (IDENTIFY, READ SECTORS, WRITE SECTORS) by writing to ATA registers mapped into SDIO function 1 address space via CMD52, and transferring sector data via CMD53. 3-tier retry logic at CMD, data, and ATA levels.
 
-3. **PIO SDIO** (`sdio_pio.c`, `sdio.pio`) — Hardware-accelerated SDIO using RP2040's PIO peripheral. Three PIO programs share a single state machine via dynamic program swapping:
-   - **CMD tx/rx** (26 instructions) — sends SDIO commands and receives responses
-   - **DAT read** (13 instructions) — reads data blocks from 4-bit DAT bus via DMA
-   - **DAT write** (16 instructions) — writes data blocks to 4-bit DAT bus via DMA, with built-in CRC status reception and busy-wait
+3. **PIO SDIO** (`sdio_pio.c`, `sdio.pio`) — Hardware-accelerated SDIO using RP2040's PIO peripheral (4-bit bus at 10 MHz, 4 PIO cycles per bit with input synchronizers bypassed). Three PIO programs share a single state machine via dynamic program swapping:
+   - **CMD tx/rx** (24 instructions) — sends SDIO commands and receives responses
+   - **DAT read** (12 instructions) — reads data blocks from 4-bit DAT bus via byte-swapping DMA (no CPU repack); block N's CRC verifies while block N+1 streams
+   - **DAT write** (14 instructions) — writes data blocks to 4-bit DAT bus via DMA, with built-in CRC status reception and busy-wait; block N+1's nibble stream builds while block N transfers
 
-4. **Bit-bang SDIO** (`sdio_hw.c`) — Software SDIO used only for card initialization at 400 KHz (before PIO is set up). All runtime I/O uses PIO.
+4. **Pin/Power** (`sdio_hw.c`) — GPIO initialization and HDD power control. All SDIO communication uses PIO.
 
 Human notes: Interestingly, Claude was really reluctant to implement SDIO in PIO, and a lot of development cycles were wasted bouncing back and forth between PIO and bit-banging.
 
@@ -325,7 +326,8 @@ HW specifically designed for this drive is under /hardware!
 | v0.8 | 588 kB/s | 274 kB/s | PIO writes, OSR flush fix |
 | v0.9 | 475 kB/s | 371 kB/s | 64-sector chunks, CRC16 read verification |
 | v0.10 | 453 kB/s | 329 kB/s | LED remap, HDD EN pin, UART on GP12/GP13 |
-| **v0.11** | **~450 kB/s** | **~340 kB/s** | **HDD power gate, PIO wake, bad sector sense, USB suspend** |
+| v0.11 | ~450 kB/s | ~340 kB/s | HDD power gate, PIO wake, bad sector sense, USB suspend |
+| **v0.12** | **~985 kB/s** | **~925 kB/s** | **Drive/USB I/O overlap (read prefetch + write-behind), pipelined PIO blocks, bswap DMA, 4-cycle PIO loops, SYNCHRONIZE CACHE** |
 
 ## Testing
 

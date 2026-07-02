@@ -95,21 +95,25 @@ else
     result 1 "Expected 1048576 bytes, got ${READ_BYTES:-0}"
 fi
 
-# ── Test 4: Bad sector handling ───────────────────────────
-bold "TEST 4: Bad sector read (LBA $BAD_LBA)"
-# Should complete (bad sectors zero-filled) without hanging
-if timeout 30 dd if="$DEV" bs=512 skip=$BAD_LBA count=1 of=/dev/null 2>/dev/null; then
-    result 0 "Bad sector read completed (zero-filled)"
+# ── Test 4: Bad sector handling (strict mode) ─────────────
+bold "TEST 4: Bad sector read (LBA $BAD_LBA) must fail with MEDIUM ERROR"
+# v0.11+ strict semantics: an unrecovered block fails the SCSI command
+# instead of returning synthetic zero-filled data.
+if timeout 60 dd if="$DEV" bs=512 skip=$BAD_LBA count=1 of=/dev/null 2>/dev/null; then
+    result 1 "Bad sector read unexpectedly succeeded (expected MEDIUM ERROR)"
 else
-    result 1 "Bad sector read failed or timed out"
+    result 0 "Bad sector read failed as expected (strict MEDIUM ERROR)"
 fi
 
-# ── Test 5: Read sectors around bad area ──────────────────
-bold "TEST 5: Read around bad sector (LBA $((BAD_LBA-2)) to $((BAD_LBA+2)))"
-if timeout 30 dd if="$DEV" bs=512 skip=$((BAD_LBA-2)) count=5 of=/dev/null 2>/dev/null; then
-    result 0 "Read 5 sectors around bad area OK"
+# ── Test 5: Read good sectors adjacent to bad area ────────
+# iflag=direct: buffered reads round to 4 KB pages, which would drag the
+# bad sector into the request and fail sectors that are actually good.
+bold "TEST 5: Read adjacent sectors (LBA $((BAD_LBA-2))-$((BAD_LBA-1)), $((BAD_LBA+1))-$((BAD_LBA+2)))"
+if timeout 30 dd if="$DEV" bs=512 skip=$((BAD_LBA-2)) count=2 iflag=direct of=/dev/null 2>/dev/null &&
+   timeout 30 dd if="$DEV" bs=512 skip=$((BAD_LBA+1)) count=2 iflag=direct of=/dev/null 2>/dev/null; then
+    result 0 "Good sectors around bad area read OK"
 else
-    result 1 "Read around bad sector failed"
+    result 1 "Read of good sectors adjacent to bad area failed"
 fi
 
 # ── Test 6: Write + readback verify ───────────────────────

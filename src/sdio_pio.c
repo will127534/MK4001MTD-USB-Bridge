@@ -2,12 +2,14 @@
  * PIO-accelerated SDIO for MK4001MTD Bridge
  *
  * Single PIO0 SM0 — programs swapped on the fly:
- *   CMD tx/rx (26 instr) — loaded for CMD52/CMD53 command phase
- *   DAT read  (13 instr) — loaded for CMD53 read data phase
- *   DAT write (15 instr) — loaded for CMD53 write data phase
+ *   CMD tx/rx (24 instr) — loaded for CMD52/CMD53 command phase
+ *   DAT read  (12 instr) — loaded for CMD53 read data phase
+ *   DAT write (14 instr) — loaded for CMD53 write data phase
  *
  * Only one program loaded at a time → full 32 slots available.
  * Program swap cost is ~1µs (just bitmask + register writes).
+ * CMD53 blocks are pipelined: while PIO+DMA stream block N+1, the CPU
+ * verifies block N's CRC (reads) or builds block N+1's nibble stream (writes).
  */
 
 #include "sdio_pio.h"

@@ -32,7 +32,7 @@
 
 // PIO clock dividers
 #define PIO_SLOW_CLKDIV    62.5f   // ~500 KHz for SDIO card init
-#define PIO_FAST_CLKDIV     3.125f // ~10 MHz for runtime
+#define PIO_FAST_CLKDIV     3.125f // ~10 MHz bus for runtime (drive-limited beyond this)
 
 #define DRIVE_WARMUP_SECTORS 16u
 
@@ -45,7 +45,7 @@ static uint16_t id_word(const uint8_t *buf, uint8_t w) {
 
 static void print_banner(void) {
     printf("\n\n========================================\n");
-    printf("  MK4001MTD USB Bridge v0.11\n");
+    printf("  MK4001MTD USB Bridge v0.12\n");
     printf("  SDIO-ATA → USB Mass Storage (PIO)\n");
     printf("========================================\n\n");
 }

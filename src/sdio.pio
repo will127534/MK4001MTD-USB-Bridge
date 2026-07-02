@@ -1,9 +1,12 @@
 ; SDIO PIO programs for MK4001MTD Bridge
 ; All on PIO0, single SM0. Programs swapped on the fly:
-;   CMD tx/rx (26 instr) — for CMD52/CMD53 command+response
-;   DAT read  (13 instr) — for CMD53 data read phase
-;   DAT write (15 instr) — for CMD53 data write phase
+;   CMD tx/rx (24 instr) — for CMD52/CMD53 command+response
+;   DAT read  (12 instr) — for CMD53 data read phase
+;   DAT write (14 instr) — for CMD53 data write phase
 ; Only one program loaded at a time → full 32 slots available.
+; Hot loops run 4 PIO cycles per bit/nibble; CMD/DAT inputs are sampled at
+; the rising edge with the GPIO input synchronizers bypassed (the card shifts
+; on our own falling edge, so sampling is deterministic).
 
 ; ============================================================
 ; Program: sdio_cmd_tx_rx (26 instructions)
