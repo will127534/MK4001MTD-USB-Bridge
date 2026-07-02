@@ -529,7 +529,7 @@ static const char *smart_attr_name(uint8_t id) {
 }
 
 // Vendor command 0xC2 (observed in N91 trace)
-static bool ata_vendor_c2(uint8_t feature, uint8_t *out_regs) {
+bool ata_vendor_c2(uint8_t feature, uint8_t *out_regs) {
     if (!ata_wait_not_busy(5000)) return false;
     if (!ata_reg_write(ATA_REG_FEATURE, feature) ||
         !ata_reg_write(ATA_REG_COMMAND, 0xC2)) {
@@ -556,16 +556,22 @@ void ata_smart_dump(void) {
 
     // Features that the drive accepts (discovered by scanning 0x00-0xFF):
     // 0x01-0x04, 0x10-0x12, 0x20-0x21 — all others abort (ERR=0x04)
+    //
+    // 0x21 is the drive TEMPERATURE (°C-scale): verified thermally on this
+    // bench (33→41 under 3.5min sustained I/O, →27 after 3min powered off).
+    // The N91 queries 0x20+0x21 at the start of every drive session — it
+    // enforced HDD operating-temperature limits. 0x10/0x12 read as activity
+    // counters (reset on init, advance with I/O, constant offset apart).
     static const struct { uint8_t feat; const char *label; } vc2[] = {
         {0x01, "unknown_01"},
         {0x02, "unknown_02"},
         {0x03, "unknown_03"},
         {0x04, "unknown_04"},
-        {0x10, "diag_10 (LBA_LO varies)"},
+        {0x10, "activity counter A"},
         {0x11, "diag_11"},
-        {0x12, "diag_12 (LBA_LO varies)"},
-        {0x20, "query_20 (N91: SC=0xFF always)"},
-        {0x21, "query_21 (N91: SC varies per boot)"},
+        {0x12, "activity counter B"},
+        {0x20, "static caps (FF/00/FF/00)"},
+        {0x21, "temperature [SC = degC]"},
     };
 
     for (int i = 0; i < (int)(sizeof(vc2)/sizeof(vc2[0])); i++) {

@@ -110,7 +110,7 @@ Interrupt signaling: CCCR INT_PENDING (fn0, address 0x0005), bit 1 = function 1 
 | WRITE SECTORS | 0x30 | USBDrive, FastFormat, SlowFormat | Primary write — never uses WRITE MULTIPLE (0xC5) |
 | IDENTIFY DEVICE | 0xEC | Boot, FastFormat | Issued once per format, once at boot |
 | STANDBY IMMEDIATE | 0xE0 | Boot, Idle, USBDrive, FastFormat | Power management between bursts |
-| Vendor 0xC2 | 0xC2 | All | Toshiba multi-sector config |
+| Vendor 0xC2 | 0xC2 | All | Toshiba status query — FEAT=0x21 returns drive temperature (see §4) |
 
 **Key insight:** Multi-sector transfers are achieved entirely through CMD53 multi-block mode. The ATA SECCOUNT register determines how many sectors per command, and CMD53 block_count always matches SECCOUNT.
 
@@ -159,36 +159,53 @@ CMD52 RD fn0 INT_PENDING → 0x00    (no interrupt expected)
 
 ---
 
-## 4. Vendor Command 0xC2 — Toshiba Multi-Sector Config
+## 4. Vendor Command 0xC2 — Toshiba Status Query (Temperature)
 
 Non-standard ATA command using FEATURES register as sub-command selector.
+The N91 always issues FEAT=0x20 and FEAT=0x21 as a pair at the **start of
+each drive usage session** — immediately after init (+IDENTIFY on cold
+start), right before the first media read. In session-retry churn the pairs
+recur ~6–7.5 s apart; a continuous operation (SlowFormat) queries only once.
 
-**FEAT=0x20 — Query max multi-sector capability:**
+**FEAT=0x20 — static response (capability/limits?):**
 ```
 WR FEAT ← 0x20, WR CMD ← 0xC2
-→ SECCOUNT=0xFF (255 max), LBA_MID=0xFF, LBA_LO=0x00, LBA_HI=0x00
+→ SECCOUNT=0xFF, LBA_LO=0x00, LBA_MID=0xFF, LBA_HI=0x00
 ```
-Always returns 0xFF across all traces.
+Identical across all traces and all bench boots. Exact meaning unresolved.
 
-**FEAT=0x21 — Query current multi-sector count:**
+**FEAT=0x21 — drive temperature (°C scale):**
 ```
 WR FEAT ← 0x21, WR CMD ← 0xC2
-→ SECCOUNT = varies (see below)
+→ SECCOUNT = temperature
 ```
-
-The current count is **not fixed** — the drive picks its own default after each re-init:
+The N91 reads back only SECCOUNT (one byte):
 
 | Trace | FEAT=0x21 Values |
 |-------|-----------------|
-| Boot | 25 (0x19) |
+| Boot | 25, 26 (0x19, 0x1A) |
 | Idle | 35 (0x23) |
 | USBDrive | 36, 36, 38 |
 | FastFormat | 28, 30 |
-| SlowFormat | 32 |
+| SlowFormat | 32 (0x20) |
 
-**Must query fresh after every init — do not cache.**
+An earlier revision of this analysis called this a "multi-sector count".
+That is wrong on two counts: the N91's transfers routinely exceed the value
+(128-sector CMD53 blocks vs. readings of 25–38), and the value tracks the
+drive's **thermal state**. Verified on the bridge bench (2026-07-02) by
+sampling FEAT=0x21 every 5 s: 33 → 41 over 3.5 min of sustained I/O
+(saturating curve), then 41 → 27 after 3 min powered off, re-rising with
+activity after wake. All observed values are plausible microdrive
+temperatures in °C (absolute calibration unverified).
 
-Functionally equivalent to ATA SET MULTIPLE MODE (0xC6), but Toshiba-proprietary. The bridge firmware can ignore this and set SECCOUNT directly.
+This matches the N91's documented behavior of enforcing HDD
+operating-temperature limits (refusing hard-disk use when too cold/hot):
+the phone checks drive temperature before starting each media session.
+
+**FEAT=0x10 / 0x12 (not used by the N91; found by sub-command scanning):**
+16-bit values in LBA_MID:LBA_LO that behave as activity/uptime counters —
+reset near zero on init, advance with I/O (~7 counts/s under sustained
+reads), and maintain a constant offset (282) between the two once running.
 
 ---
 
@@ -370,7 +387,7 @@ Identical across all traces, after every re-init:
 
 1. **SECCOUNT must match CMD53 block_count** — confirmed in all traces
 2. **Use READ/WRITE SECTORS (0x20/0x30)**, not READ/WRITE MULTIPLE — N91 never uses 0xC4/0xC5
-3. **Vendor 0xC2 can be ignored** — bridge sets SECCOUNT directly
+3. **Vendor 0xC2 is optional for data transfer** (bridge sets SECCOUNT directly) — but FEAT=0x21 is a free drive-temperature readout worth exposing as a diagnostic
 4. **Multi-block transfers up to 128 sectors** work reliably (SlowFormat does thousands)
 5. **Full SDIO re-init after standby** is expected — drive SDIO controller loses state
 6. **8-sector writes are the sweet spot** (4 KB = FAT32 cluster size on Windows)
