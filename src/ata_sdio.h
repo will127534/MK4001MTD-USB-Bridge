@@ -35,6 +35,7 @@ bool ata_vendor_c2(uint8_t feature, uint8_t *out_regs);
 // One-shot probe for hidden SMART/health/defect reporting (non-destructive)
 void ata_health_probe(void);
 
+
 // Power management
 bool ata_standby_immediate(void);
 

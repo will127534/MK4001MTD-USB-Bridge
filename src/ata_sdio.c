@@ -488,6 +488,9 @@ bool ata_smart_enable(void) {
 bool ata_smart_read_data(uint8_t *buf);
 bool ata_smart_read_thresholds(uint8_t *buf);
 
+bool ata_smart_read_data(uint8_t *buf);
+bool ata_smart_read_thresholds(uint8_t *buf);
+
 static void probe_hexdump(const uint8_t *buf, int len) {
     for (int i = 0; i < len; i += 16) {
         printf("  %03X:", i);
@@ -657,24 +660,38 @@ void ata_smart_dump(void) {
     // Features that the drive accepts (discovered by scanning 0x00-0xFF):
     // 0x01-0x04, 0x10-0x12, 0x20-0x21 — all others abort (ERR=0x04)
     //
-    // 0x21 is the drive TEMPERATURE (°C-scale): verified thermally on this
-    // bench (33→41 under 3.5min sustained I/O, →27 after 3min powered off).
-    // The N91 queries 0x20+0x21 at the start of every drive session — it
-    // enforced HDD operating-temperature limits. 0x10/0x12 read as activity
-    // counters (reset on init, advance with I/O, constant offset apart).
+    // Characterized on this bench (2026-07-02); each sub-command only writes
+    // SOME taskfile registers — unwritten ones hold stale values, so the
+    // taskfile is zeroed before each query below:
+    //   0x21: SC = drive TEMPERATURE (°C-scale; verified thermally: 33→41
+    //         under sustained I/O, →27 after 3min powered off). The N91
+    //         queries 0x20+0x21 at the start of every drive session — it
+    //         enforced HDD operating-temperature limits.
+    //   0x20: writes SC + LBA_LO/MID/HI = FE/00/FF/00, static everywhere.
+    //   0x10/0x12: LBA_MID:LBA_LO = activity counters (reset on init,
+    //         ~7 counts/s under I/O, constant offset apart).
+    //   0x11: writes LBA_LO only; always 0x00 so far — did not react to
+    //         command-level (IDNF) errors; possible media-error indicator.
+    //   0x01: writes LBA_LO/MID with a volatile state value (0 when idle).
+    //   0x02-0x04: write NO output registers (opaque actions/no-ops).
     static const struct { uint8_t feat; const char *label; } vc2[] = {
-        {0x01, "unknown_01"},
-        {0x02, "unknown_02"},
-        {0x03, "unknown_03"},
-        {0x04, "unknown_04"},
+        {0x01, "state readout (volatile)"},
+        {0x02, "no readback (action?)"},
+        {0x03, "no readback (action?)"},
+        {0x04, "no readback (action?)"},
         {0x10, "activity counter A"},
-        {0x11, "diag_11"},
+        {0x11, "single byte, 0 (err flag?)"},
         {0x12, "activity counter B"},
-        {0x20, "static caps (FF/00/FF/00)"},
+        {0x20, "static caps (FE/00/FF/00)"},
         {0x21, "temperature [SC = degC]"},
     };
 
     for (int i = 0; i < (int)(sizeof(vc2)/sizeof(vc2[0])); i++) {
+        // Zero the taskfile so stale register values can't masquerade as output
+        ata_reg_write(ATA_REG_SECCOUNT, 0x00);
+        ata_reg_write(ATA_REG_LBA_LO, 0x00);
+        ata_reg_write(ATA_REG_LBA_MID, 0x00);
+        ata_reg_write(ATA_REG_LBA_HI, 0x00);
         printf("  FEAT=0x%02X %-32s → ", vc2[i].feat, vc2[i].label);
         if (ata_vendor_c2(vc2[i].feat, regs))
             printf("SC=%02X LBA=%02X/%02X/%02X ST=%02X%s\n",

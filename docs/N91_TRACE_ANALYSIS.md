@@ -202,10 +202,17 @@ This matches the N91's documented behavior of enforcing HDD
 operating-temperature limits (refusing hard-disk use when too cold/hot):
 the phone checks drive temperature before starting each media session.
 
-**FEAT=0x10 / 0x12 (not used by the N91; found by sub-command scanning):**
-16-bit values in LBA_MID:LBA_LO that behave as activity/uptime counters —
-reset near zero on init, advance with I/O (~7 counts/s under sustained
-reads), and maintain a constant offset (282) between the two once running.
+**Other sub-commands (not used by the N91; found by sub-command scanning):**
+Each 0xC2 sub-command only writes *some* taskfile registers — unwritten
+registers keep stale values, which previously masqueraded as constant
+responses. Characterized with taskfile-preload experiments (2026-07-02):
+
+| FEAT | Writes | Behavior |
+|------|--------|----------|
+| 0x10, 0x12 | LBA_MID:LBA_LO | Activity counters: reset near zero on init, ~7 counts/s under sustained I/O, constant offset (282) between them once running |
+| 0x11 | LBA_LO only | Always 0x00 so far; unchanged by command-level (IDNF) errors — plausible media-error flag/count, unverifiable without a real UNC event |
+| 0x01 | LBA_LO/MID | Volatile 16-bit state value; 0 when sampled repeatedly at idle |
+| 0x02–0x04 | nothing | No output registers, no observed effect on the other counters — opaque actions or no-ops; do not issue with arbitrary register contents |
 
 **No other health/defect reporting exists.** Probed on the bridge bench
 (2026-07-02, all non-destructive): SMART ENABLE / READ DATA / READ
