@@ -473,107 +473,20 @@ bool ata_smart_enable(void) {
     return ata_smart_cmd(SMART_ENABLE_OPS, NULL);
 }
 
-// One-shot probe for hidden health/defect reporting (not called at boot;
-// kept as a research tool — link-time GC drops it when unused).
-// All commands used are standard and non-destructive; an unsupported
-// command simply aborts (ERR=ABRT). Probed on this unit (2026-07-02):
-//   CHECK POWER MODE (E5)      → accepted (ST=0x50, SC=0x00)
-//   SMART ENABLE/READ DATA/THRESHOLDS/RETURN STATUS/READ LOG → all ABRT
-//   Full IDENTIFY              → vendor words 129-159 all zero; only
-//                                optional feature advertised is ATA
-//                                Security (W128=0x0001, no password set)
-// Conclusion: no SMART/defect reporting exists; the only live telemetry
-// is vendor 0xC2 FEAT=0x21 (temperature). Defect management is internal
-// and host-invisible (observed pending-sector semantics at LBA 1952).
-bool ata_smart_read_data(uint8_t *buf);
-bool ata_smart_read_thresholds(uint8_t *buf);
-
-bool ata_smart_read_data(uint8_t *buf);
-bool ata_smart_read_thresholds(uint8_t *buf);
-
-static void probe_hexdump(const uint8_t *buf, int len) {
-    for (int i = 0; i < len; i += 16) {
-        printf("  %03X:", i);
-        for (int j = 0; j < 16; j++) printf(" %02X", buf[i + j]);
-        printf("\n");
-    }
-}
-
-void ata_health_probe(void) {
-    static uint8_t buf[512] __attribute__((aligned(4)));
-    uint8_t st = 0, er = 0, sc = 0, lm = 0, lh = 0;
-
-    printf("\n[PROBE] === Extended health probe ===\n");
-
-    // CHECK POWER MODE (0xE5) — standard, non-data
-    if (ata_wait_not_busy(2000) &&
-        ata_reg_write(ATA_REG_COMMAND, 0xE5) && ata_wait_not_busy(2000)) {
-        ata_read_status_error(&st, &er);
-        ata_reg_read(ATA_REG_SECCOUNT, &sc);
-        printf("[PROBE] CHECK POWER MODE: ST=%02X ERR=%02X SC=0x%02X\n", st, er, sc);
-    }
-
-    // SMART ENABLE OPERATIONS (B0/D8)
-    bool smart_en = ata_smart_enable();
-    printf("[PROBE] SMART ENABLE: %s\n", smart_en ? "accepted" : "aborted");
-
-    // SMART READ DATA (B0/D0)
-    if (ata_smart_read_data(buf)) {
-        printf("[PROBE] SMART READ DATA OK:\n");
-        probe_hexdump(buf, 512);
-    } else {
-        printf("[PROBE] SMART READ DATA: aborted\n");
-    }
-
-    // SMART READ THRESHOLDS (B0/D1)
-    if (ata_smart_read_thresholds(buf)) {
-        printf("[PROBE] SMART READ THRESHOLDS OK:\n");
-        probe_hexdump(buf, 512);
-    } else {
-        printf("[PROBE] SMART THRESHOLDS: aborted\n");
-    }
-
-    // SMART RETURN STATUS (B0/DA) — result in LBA_MID/HI: 4F/C2 ok, F4/2C tripped
-    if (ata_wait_not_busy(2000) &&
-        ata_reg_write(ATA_REG_FEATURE, 0xDA) &&
-        ata_reg_write(ATA_REG_LBA_MID, SMART_LBA_MID) &&
-        ata_reg_write(ATA_REG_LBA_HI, SMART_LBA_HI) &&
-        ata_reg_write(ATA_REG_DEV_HEAD, 0xE0) &&
-        ata_reg_write(ATA_REG_COMMAND, ATA_CMD_SMART) &&
-        ata_wait_not_busy(2000)) {
-        ata_read_status_error(&st, &er);
-        ata_reg_read(ATA_REG_LBA_MID, &lm);
-        ata_reg_read(ATA_REG_LBA_HI, &lh);
-        printf("[PROBE] SMART RETURN STATUS: ST=%02X ERR=%02X LBA_MID/HI=%02X/%02X\n",
-               st, er, lm, lh);
-    }
-
-    // SMART READ LOG (B0/D5), log 0x00 (directory) then 0x01 (summary error log)
-    for (int log = 0; log <= 1; log++) {
-        if (!ata_wait_not_busy(2000) ||
-            !ata_reg_write(ATA_REG_FEATURE, 0xD5) ||
-            !ata_reg_write(ATA_REG_SECCOUNT, 0x01) ||
-            !ata_reg_write(ATA_REG_LBA_LO, (uint8_t)log) ||
-            !ata_reg_write(ATA_REG_LBA_MID, SMART_LBA_MID) ||
-            !ata_reg_write(ATA_REG_LBA_HI, SMART_LBA_HI) ||
-            !ata_reg_write(ATA_REG_DEV_HEAD, 0xE0) ||
-            !ata_reg_write(ATA_REG_COMMAND, ATA_CMD_SMART)) continue;
-        if (ata_wait_drq(2000) && cmd53_rd(1, ATA_REG_DATA, buf, 1)) {
-            printf("[PROBE] SMART READ LOG %02X OK:\n", log);
-            probe_hexdump(buf, 512);
-        } else {
-            ata_log_status_error("READ-LOG", (uint32_t)log);
-            printf("[PROBE] SMART READ LOG %02X: aborted\n", log);
-            ata_error_recovery();
-        }
-    }
-
-    // Full IDENTIFY hex dump — words 129-159 are vendor-reserved
-    if (ata_identify(buf)) {
-        printf("[PROBE] Full IDENTIFY:\n");
-        probe_hexdump(buf, 512);
-    }
-    printf("[PROBE] === End health probe ===\n\n");
+// Drive temperature via vendor 0xC2 FEAT=0x21. The value tracks thermal
+// state on a °C-like scale (verified: rises 33→41 under sustained I/O,
+// falls to ambient when powered off; the N91 checks it before every drive
+// session to enforce its HDD operating-temperature limits).
+bool ata_read_temperature(uint8_t *degc) {
+    uint8_t regs[6];
+    // Zero the taskfile first: 0xC2 sub-commands only write some registers
+    if (!ata_reg_write(ATA_REG_SECCOUNT, 0x00) ||
+        !ata_reg_write(ATA_REG_LBA_LO, 0x00) ||
+        !ata_reg_write(ATA_REG_LBA_MID, 0x00) ||
+        !ata_reg_write(ATA_REG_LBA_HI, 0x00)) return false;
+    if (!ata_vendor_c2(0x21, regs)) return false;
+    if (degc) *degc = regs[1];
+    return true;
 }
 
 bool ata_smart_read_data(uint8_t *buf) {
@@ -670,17 +583,21 @@ void ata_smart_dump(void) {
     //   0x20: writes SC + LBA_LO/MID/HI = FE/00/FF/00, static everywhere.
     //   0x10/0x12: LBA_MID:LBA_LO = activity counters (reset on init,
     //         ~7 counts/s under I/O, constant offset apart).
-    //   0x11: writes LBA_LO only; always 0x00 so far — did not react to
-    //         command-level (IDNF) errors; possible media-error indicator.
+    //   0x11: writes LBA_LO only; always 0x00 — unchanged by IDNF command
+    //         errors AND by a live UNC pending sector (torn-write test), so
+    //         it is NOT a media-error/defect counter.
     //   0x01: writes LBA_LO/MID with a volatile state value (0 when idle).
     //   0x02-0x04: write NO output registers (opaque actions/no-ops).
+    // No sub-command exposes bad-sector/defect counts — defect management
+    // is fully internal (pending sectors surface only as UNC on read and
+    // are cleared by rewrite).
     static const struct { uint8_t feat; const char *label; } vc2[] = {
         {0x01, "state readout (volatile)"},
         {0x02, "no readback (action?)"},
         {0x03, "no readback (action?)"},
         {0x04, "no readback (action?)"},
         {0x10, "activity counter A"},
-        {0x11, "single byte, 0 (err flag?)"},
+        {0x11, "single byte, always 0"},
         {0x12, "activity counter B"},
         {0x20, "static caps (FE/00/FF/00)"},
         {0x21, "temperature [SC = degC]"},

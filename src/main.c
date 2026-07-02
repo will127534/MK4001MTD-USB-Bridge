@@ -24,6 +24,7 @@
 
 // Timing
 #define IDLE_STANDBY_MS     5000u
+#define TEMP_LOG_INTERVAL_MS 30000u // drive temperature report period on UART
 #define USB_PRE_DELAY_MS    5000u   // boot delay before presenting USB to the host
 #define POWER_OFF_MS        500u    // initial power-off duration
 #define SPINUP_MS           1500u   // initial spin-up wait
@@ -175,6 +176,29 @@ static bool init_drive(void) {
     return true;
 }
 
+// Report drive temperature (vendor 0xC2 FEAT=0x21) on UART: once when the
+// drive (re)starts spinning, then every TEMP_LOG_INTERVAL_MS while active.
+static void service_temperature_log(void) {
+    static uint32_t last_ms = 0;
+    static bool was_active = false;
+
+    bool active = msc_is_drive_spinning() && !msc_is_power_gated();
+    if (!active) {
+        was_active = false;
+        return;
+    }
+
+    uint32_t now = to_ms_since_boot(get_absolute_time());
+    if (was_active && (now - last_ms) < TEMP_LOG_INTERVAL_MS) return;
+    was_active = true;
+    last_ms = now;
+
+    uint8_t degc = 0;
+    if (ata_read_temperature(&degc)) {
+        printf("[TEMP] drive temperature: %u C\n", degc);
+    }
+}
+
 static void service_idle_standby(void) {
     if (!msc_is_drive_spinning()) return;
 
@@ -241,6 +265,7 @@ int main(void) {
         tud_task();
         msc_service_write_behind();
         msc_service_prefetch();
+        service_temperature_log();
         service_idle_standby();
     }
 }

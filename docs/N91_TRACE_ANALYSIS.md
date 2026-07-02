@@ -210,9 +210,21 @@ responses. Characterized with taskfile-preload experiments (2026-07-02):
 | FEAT | Writes | Behavior |
 |------|--------|----------|
 | 0x10, 0x12 | LBA_MID:LBA_LO | Activity counters: reset near zero on init, ~7 counts/s under sustained I/O, constant offset (282) between them once running |
-| 0x11 | LBA_LO only | Always 0x00 so far; unchanged by command-level (IDNF) errors — plausible media-error flag/count, unverifiable without a real UNC event |
+| 0x11 | LBA_LO only | Always 0x00 — unchanged by command-level (IDNF) errors **and by a live UNC pending sector** (torn-write test below), so it is not a media-error counter |
 | 0x01 | LBA_LO/MID | Volatile 16-bit state value; 0 when sampled repeatedly at idle |
 | 0x02–0x04 | nothing | No output registers, no observed effect on the other counters — opaque actions or no-ops; do not issue with arbitrary register contents |
+
+**Torn-write experiment (2026-07-02):** to test whether any sub-command is
+a SMART-style defect counter, a pending sector was deliberately created by
+cutting drive power immediately after the data phase of a 128-sector write
+(a 4 KB write survived every cut — the drive's bulk capacitance rides
+through a small commit; a 64 KB commit outlasts the rail). One sector came
+back persistently unreadable (UNC), exactly like the drive's historical
+bad sector at LBA 1952. Every 0xC2 register stayed at zero across
+baseline → live-UNC → repair; only the temperature moved. A rewrite fully
+repaired the sector. **Conclusion: the drive exposes no bad-sector/defect
+indicator at all** — a pending sector is visible only as UNC on read, and
+rewrite is the designed recovery. Defect management is fully internal.
 
 **No other health/defect reporting exists.** Probed on the bridge bench
 (2026-07-02, all non-destructive): SMART ENABLE / READ DATA / READ

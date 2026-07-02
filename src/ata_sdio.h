@@ -32,8 +32,8 @@ void ata_smart_dump(void);
 // taskfile registers in out_regs[6] = {ERR, SC, LBA_LO, LBA_MID, LBA_HI, ST}.
 bool ata_vendor_c2(uint8_t feature, uint8_t *out_regs);
 
-// One-shot probe for hidden SMART/health/defect reporting (non-destructive)
-void ata_health_probe(void);
+// Drive temperature via vendor 0xC2 FEAT=0x21 (degrees C scale)
+bool ata_read_temperature(uint8_t *degc);
 
 
 // Power management

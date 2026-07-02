@@ -23,3 +23,8 @@ with no SDK modifications.
 
 If the pico-sdk (and its bundled TinyUSB) is ever updated, re-apply
 `msc_device.c.patch` to the new upstream file and refresh this copy.
+
+`hub-host-fixes.patch` is unrelated to this firmware (TinyUSB *host*-mode
+hub robustness fixes from earlier local development — this project is
+device-only and never compiles `hub.c`). It is preserved here for
+reference only; the SDK itself is kept pristine.

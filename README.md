@@ -200,9 +200,16 @@ Point 6 is not academic: this drive had a long-standing unreadable sector at `LB
 
 ### Prerequisites
 
-- Raspberry Pi Pico SDK
+- Raspberry Pi Pico SDK — **stock, unmodified** (set `PICO_SDK_PATH` in `CMakeLists.txt` or the environment)
 - ARM toolchain (`arm-none-eabi-gcc`)
 - CMake
+
+The firmware needs a patched TinyUSB MSC class driver (app sense data
+preserved on read/write errors + a Caching mode page with WCE=1). That
+file is **vendored in this repo** at `lib/tinyusb_patched/msc_device.c` —
+the build automatically compiles it instead of the SDK's copy, so a plain
+clone builds correctly against a pristine pico-sdk with no SDK surgery.
+The diff against upstream TinyUSB is in `lib/tinyusb_patched/`.
 
 ### Build & Flash
 
@@ -241,7 +248,10 @@ Human notes: Claude was wrong here because it didn’t realize that GP0 and GP1 
 
 HDD_PWR isn’t necessary. You don’t have to power-cycle the drive to use it; it’s more of a development convenience for resetting the HDD when a lot of things are hard-coded. That said, if you want power savings, you can use that signal, but it can handle warm reset without any issue.
 
-You’ll see debug messages over UART. They’re not going through USB-CDC because it was easier for Claude to set up a separate UART-to-USB logging link that doesn’t disconnect or become unstable during early development.  
+You’ll see debug messages over UART. They’re not going through USB-CDC because it was easier for Claude to set up a separate UART-to-USB logging link that doesn’t disconnect or become unstable during early development.
+
+The UART log also reports the **drive temperature** every 30 seconds while the drive is active (`[TEMP] drive temperature: 29 C`). The sensor was discovered by reverse-engineering the Toshiba vendor command `0xC2` — the N91 reads it at the start of every drive session to enforce its HDD operating-temperature limits. Details in [`docs/N91_TRACE_ANALYSIS.md`](docs/N91_TRACE_ANALYSIS.md) §4.
+
 Here is a example of the log:
 
 ```

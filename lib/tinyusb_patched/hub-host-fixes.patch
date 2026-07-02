@@ -1,0 +1,54 @@
+diff --git a/src/host/hub.c b/src/host/hub.c
+index e97014443..feb9cd5f3 100644
+--- a/src/host/hub.c
++++ b/src/host/hub.c
+@@ -261,7 +261,7 @@ bool hub_set_config(uint8_t dev_addr, uint8_t itf_num)
+       .direction = TUSB_DIR_IN
+     },
+     .bRequest = HUB_REQUEST_GET_DESCRIPTOR,
+-    .wValue   = 0,
++    .wValue   = tu_htole16(TU_U16(HUB_DESC_TYPE_HUB, 0)),
+     .wIndex   = 0,
+     .wLength  = sizeof(descriptor_hub_desc_t)
+   };
+@@ -283,7 +283,11 @@ bool hub_set_config(uint8_t dev_addr, uint8_t itf_num)
+ 
+ static void config_set_port_power (tuh_xfer_t* xfer)
+ {
+-  TU_ASSERT(XFER_RESULT_SUCCESS == xfer->result, );
++  if (XFER_RESULT_SUCCESS != xfer->result) {
++    TU_LOG_DRV("HUB Get Descriptor failed, addr = %u, result = %u, xferred = %lu\r\n",
++               xfer->daddr, xfer->result, (unsigned long) xfer->actual_len);
++    return;
++  }
+ 
+   uint8_t const daddr = xfer->daddr;
+   hub_interface_t* p_hub = get_itf(daddr);
+@@ -301,7 +305,11 @@ static void config_set_port_power (tuh_xfer_t* xfer)
+ 
+ static void config_port_power_complete (tuh_xfer_t* xfer)
+ {
+-  TU_ASSERT(XFER_RESULT_SUCCESS == xfer->result, );
++  if (XFER_RESULT_SUCCESS != xfer->result) {
++    TU_LOG_DRV("HUB Set Port Power failed, addr = %u, port = %u, result = %u\r\n",
++               xfer->daddr, (unsigned) xfer->setup->wIndex, xfer->result);
++    return;
++  }
+ 
+   uint8_t const daddr = xfer->daddr;
+   hub_interface_t* p_hub = get_itf(daddr);
+diff --git a/src/host/hub.h b/src/host/hub.h
+index 385efe6b2..62c398a08 100644
+--- a/src/host/hub.h
++++ b/src/host/hub.h
+@@ -107,6 +107,10 @@ enum {
+   HUB_REQUEST_STOP_TT         = 11
+ };
+ 
++enum {
++  HUB_DESC_TYPE_HUB = 0x29
++};
++
+ enum {
+   HUB_FEATURE_HUB_LOCAL_POWER_CHANGE = 0,
+   HUB_FEATURE_HUB_OVER_CURRENT_CHANGE
