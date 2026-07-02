@@ -207,6 +207,19 @@ the phone checks drive temperature before starting each media session.
 reset near zero on init, advance with I/O (~7 counts/s under sustained
 reads), and maintain a constant offset (282) between the two once running.
 
+**No other health/defect reporting exists.** Probed on the bridge bench
+(2026-07-02, all non-destructive): SMART ENABLE / READ DATA / READ
+THRESHOLDS / RETURN STATUS / READ LOG all abort (ERR=0x04), matching
+IDENTIFY W82/W85 = 0; IDENTIFY vendor words 129–159 are all zero; CHECK
+POWER MODE (0xE5) is accepted. The only optional ATA feature the drive
+advertises is the Security feature set (W128 = 0x0001, no password set —
+left strictly untouched). Defect management is internal and host-invisible,
+SD-card-style: the drive tracks per-sector unreadable ("pending") state —
+observed at LBA 1952, which returned UNC persistently until a rewrite
+cleared it — but exposes no reallocation counters, error logs, or defect
+lists to the host. FEAT 0x01–0x04/0x11 return small constants and remain
+the only unexplored candidates for hidden counters.
+
 ---
 
 ## 5. CMD53 Data Transfer Patterns

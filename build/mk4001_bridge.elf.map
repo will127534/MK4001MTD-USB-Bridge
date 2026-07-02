@@ -171,12 +171,17 @@ Discarded input sections
                 0x00000000       0x1a CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .text.ata_smart_enable
                 0x00000000       0x18 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .rodata.ata_health_probe.str1.4
+                0x00000000      0x1ff CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .text.ata_health_probe
+                0x00000000      0x644 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .text.ata_smart_read_data
                 0x00000000        0xc CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .text.ata_smart_read_thresholds
                 0x00000000        0xc CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .text.ata_vendor_c2
                 0x00000000      0x164 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .bss.buf.1     0x00000000      0x200 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .text          0x00000000        0x0 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
  .data          0x00000000        0x0 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
  .bss           0x00000000        0x0 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
@@ -4271,7 +4276,7 @@ LOAD /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nof
                 0x2001a420        0x1 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
  .bss.drive_ready
                 0x2001a421        0x1 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
- .bss.flush_unsupported.1
+ .bss.flush_unsupported.2
                 0x2001a422        0x1 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .bss.gpio_inited
                 0x2001a423        0x1 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
@@ -4643,655 +4648,655 @@ LOAD linker stubs
  .comment       0x0000004c       0x27 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
  .comment       0x0000004c       0x27 /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/crtend.o
 
-.debug_info     0x00000000    0x47c4f
+.debug_info     0x00000000    0x499f7
  .debug_info    0x00000000     0x24e3 CMakeFiles/mk4001_bridge.dir/src/main.c.o
  .debug_info    0x000024e3      0x946 CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
- .debug_info    0x00002e29     0x66d4 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
- .debug_info    0x000094fd     0x67c8 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
- .debug_info    0x0000fcc5      0x57f CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
- .debug_info    0x00010244     0x2e92 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
- .debug_info    0x000130d6     0x3778 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
- .debug_info    0x0001684e     0x23f1 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
- .debug_info    0x00018c3f      0x111 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
- .debug_info    0x00018d50      0x1bf CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
- .debug_info    0x00018f0f      0x989 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
- .debug_info    0x00019898      0x444 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
- .debug_info    0x00019cdc      0x239 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
- .debug_info    0x00019f15     0x21eb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
- .debug_info    0x0001c100      0x153 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
- .debug_info    0x0001c253     0x27cd CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
- .debug_info    0x0001ea20      0x2fc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
- .debug_info    0x0001ed1c     0x5005 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
- .debug_info    0x00023d21     0x2afb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
- .debug_info    0x0002681c     0x195f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
- .debug_info    0x0002817b     0x29c9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
- .debug_info    0x0002ab44      0x4cd CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
- .debug_info    0x0002b011      0x230 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
- .debug_info    0x0002b241      0x654 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
- .debug_info    0x0002b895      0x1b8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
- .debug_info    0x0002ba4d      0x20e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
- .debug_info    0x0002bc5b      0x7d2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
- .debug_info    0x0002c42d      0x769 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
- .debug_info    0x0002cb96       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
- .debug_info    0x0002cbb9       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
- .debug_info    0x0002cbdc       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
- .debug_info    0x0002cbff      0x25a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
- .debug_info    0x0002ce59       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
- .debug_info    0x0002ce7c       0x24 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
- .debug_info    0x0002cea0       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
- .debug_info    0x0002cec3      0x25a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
- .debug_info    0x0002d11d       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
- .debug_info    0x0002d140       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
- .debug_info    0x0002d163      0x288 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
- .debug_info    0x0002d3eb     0x22da CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
- .debug_info    0x0002f6c5       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
- .debug_info    0x0002f6e8      0xbbe CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
- .debug_info    0x000302a6     0x1d54 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
- .debug_info    0x00031ffa     0x14dc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
- .debug_info    0x000334d6     0x3014 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
- .debug_info    0x000364ea      0x9f6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
- .debug_info    0x00036ee0     0x2aec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
- .debug_info    0x000399cc     0x114c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
- .debug_info    0x0003ab18     0x493b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
- .debug_info    0x0003f453      0xb42 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
- .debug_info    0x0003ff95     0x1e80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
- .debug_info    0x00041e15     0x280d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
- .debug_info    0x00044622     0x13f0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
- .debug_info    0x00045a12      0x1f5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
- .debug_info    0x00045c07     0x1743 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
- .debug_info    0x0004734a       0x3c /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_info    0x00047386       0xeb /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
- .debug_info    0x00047471       0xf7 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
- .debug_info    0x00047568      0x148 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
- .debug_info    0x000476b0      0x11e /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
- .debug_info    0x000477ce      0x1fd /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
- .debug_info    0x000479cb      0x284 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+ .debug_info    0x00002e29     0x847c CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .debug_info    0x0000b2a5     0x67c8 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+ .debug_info    0x00011a6d      0x57f CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+ .debug_info    0x00011fec     0x2e92 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+ .debug_info    0x00014e7e     0x3778 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+ .debug_info    0x000185f6     0x23f1 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+ .debug_info    0x0001a9e7      0x111 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+ .debug_info    0x0001aaf8      0x1bf CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
+ .debug_info    0x0001acb7      0x989 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+ .debug_info    0x0001b640      0x444 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+ .debug_info    0x0001ba84      0x239 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+ .debug_info    0x0001bcbd     0x21eb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+ .debug_info    0x0001dea8      0x153 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+ .debug_info    0x0001dffb     0x27cd CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+ .debug_info    0x000207c8      0x2fc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+ .debug_info    0x00020ac4     0x5005 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+ .debug_info    0x00025ac9     0x2afb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+ .debug_info    0x000285c4     0x195f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+ .debug_info    0x00029f23     0x29c9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+ .debug_info    0x0002c8ec      0x4cd CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+ .debug_info    0x0002cdb9      0x230 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+ .debug_info    0x0002cfe9      0x654 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+ .debug_info    0x0002d63d      0x1b8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+ .debug_info    0x0002d7f5      0x20e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+ .debug_info    0x0002da03      0x7d2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+ .debug_info    0x0002e1d5      0x769 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+ .debug_info    0x0002e93e       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
+ .debug_info    0x0002e961       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
+ .debug_info    0x0002e984       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
+ .debug_info    0x0002e9a7      0x25a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+ .debug_info    0x0002ec01       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
+ .debug_info    0x0002ec24       0x24 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
+ .debug_info    0x0002ec48       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
+ .debug_info    0x0002ec6b      0x25a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+ .debug_info    0x0002eec5       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
+ .debug_info    0x0002eee8       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
+ .debug_info    0x0002ef0b      0x288 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
+ .debug_info    0x0002f193     0x22da CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+ .debug_info    0x0003146d       0x23 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
+ .debug_info    0x00031490      0xbbe CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+ .debug_info    0x0003204e     0x1d54 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+ .debug_info    0x00033da2     0x14dc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+ .debug_info    0x0003527e     0x3014 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+ .debug_info    0x00038292      0x9f6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+ .debug_info    0x00038c88     0x2aec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+ .debug_info    0x0003b774     0x114c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+ .debug_info    0x0003c8c0     0x493b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+ .debug_info    0x000411fb      0xb42 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+ .debug_info    0x00041d3d     0x1e80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+ .debug_info    0x00043bbd     0x280d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+ .debug_info    0x000463ca     0x13f0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+ .debug_info    0x000477ba      0x1f5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+ .debug_info    0x000479af     0x1743 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+ .debug_info    0x000490f2       0x3c /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_info    0x0004912e       0xeb /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
+ .debug_info    0x00049219       0xf7 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
+ .debug_info    0x00049310      0x148 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
+ .debug_info    0x00049458      0x11e /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
+ .debug_info    0x00049576      0x1fd /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
+ .debug_info    0x00049773      0x284 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
-.debug_abbrev   0x00000000     0xa995
+.debug_abbrev   0x00000000     0xa9e6
  .debug_abbrev  0x00000000      0x4b2 CMakeFiles/mk4001_bridge.dir/src/main.c.o
  .debug_abbrev  0x000004b2      0x212 CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
- .debug_abbrev  0x000006c4      0x4e0 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
- .debug_abbrev  0x00000ba4      0x6ce CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
- .debug_abbrev  0x00001272      0x1ac CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
- .debug_abbrev  0x0000141e      0x582 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
- .debug_abbrev  0x000019a0      0x5c0 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
- .debug_abbrev  0x00001f60      0x4f9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
- .debug_abbrev  0x00002459       0x77 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
- .debug_abbrev  0x000024d0      0x12b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
- .debug_abbrev  0x000025fb      0x328 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
- .debug_abbrev  0x00002923      0x20f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
- .debug_abbrev  0x00002b32      0x1bb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
- .debug_abbrev  0x00002ced      0x614 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
- .debug_abbrev  0x00003301       0xee CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
- .debug_abbrev  0x000033ef      0x48c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
- .debug_abbrev  0x0000387b      0x1d5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
- .debug_abbrev  0x00003a50      0x659 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
- .debug_abbrev  0x000040a9      0x4f2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
- .debug_abbrev  0x0000459b      0x365 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
- .debug_abbrev  0x00004900      0x512 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
- .debug_abbrev  0x00004e12      0x1d2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
- .debug_abbrev  0x00004fe4      0x145 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
- .debug_abbrev  0x00005129      0x1bc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
- .debug_abbrev  0x000052e5      0x11d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
- .debug_abbrev  0x00005402      0x182 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
- .debug_abbrev  0x00005584      0x26b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
- .debug_abbrev  0x000057ef      0x2af CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
- .debug_abbrev  0x00005a9e       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
- .debug_abbrev  0x00005ab0       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
- .debug_abbrev  0x00005ac2       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
- .debug_abbrev  0x00005ad4      0x17a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
- .debug_abbrev  0x00005c4e       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
- .debug_abbrev  0x00005c60       0x14 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
- .debug_abbrev  0x00005c74       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
- .debug_abbrev  0x00005c86      0x173 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
- .debug_abbrev  0x00005df9       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
- .debug_abbrev  0x00005e0b       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
- .debug_abbrev  0x00005e1d       0xb8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
- .debug_abbrev  0x00005ed5      0x50c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
- .debug_abbrev  0x000063e1       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
- .debug_abbrev  0x000063f3      0x352 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
- .debug_abbrev  0x00006745      0x5d9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
- .debug_abbrev  0x00006d1e      0x498 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
- .debug_abbrev  0x000071b6      0x54e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
- .debug_abbrev  0x00007704      0x2fb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
- .debug_abbrev  0x000079ff      0x5d9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
- .debug_abbrev  0x00007fd8      0x480 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
- .debug_abbrev  0x00008458      0x7f1 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
- .debug_abbrev  0x00008c49      0x38d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
- .debug_abbrev  0x00008fd6      0x534 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
- .debug_abbrev  0x0000950a      0x443 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
- .debug_abbrev  0x0000994d      0x4b2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
- .debug_abbrev  0x00009dff      0x153 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
- .debug_abbrev  0x00009f52      0x412 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
- .debug_abbrev  0x0000a364       0x26 /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_abbrev  0x0000a38a       0x90 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
- .debug_abbrev  0x0000a41a       0xc9 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
- .debug_abbrev  0x0000a4e3       0xc3 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
- .debug_abbrev  0x0000a5a6       0xbe /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
- .debug_abbrev  0x0000a664      0x157 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
- .debug_abbrev  0x0000a7bb      0x1da /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+ .debug_abbrev  0x000006c4      0x531 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .debug_abbrev  0x00000bf5      0x6ce CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+ .debug_abbrev  0x000012c3      0x1ac CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+ .debug_abbrev  0x0000146f      0x582 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+ .debug_abbrev  0x000019f1      0x5c0 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+ .debug_abbrev  0x00001fb1      0x4f9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+ .debug_abbrev  0x000024aa       0x77 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+ .debug_abbrev  0x00002521      0x12b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
+ .debug_abbrev  0x0000264c      0x328 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+ .debug_abbrev  0x00002974      0x20f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+ .debug_abbrev  0x00002b83      0x1bb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+ .debug_abbrev  0x00002d3e      0x614 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+ .debug_abbrev  0x00003352       0xee CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+ .debug_abbrev  0x00003440      0x48c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+ .debug_abbrev  0x000038cc      0x1d5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+ .debug_abbrev  0x00003aa1      0x659 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+ .debug_abbrev  0x000040fa      0x4f2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+ .debug_abbrev  0x000045ec      0x365 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+ .debug_abbrev  0x00004951      0x512 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+ .debug_abbrev  0x00004e63      0x1d2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+ .debug_abbrev  0x00005035      0x145 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+ .debug_abbrev  0x0000517a      0x1bc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+ .debug_abbrev  0x00005336      0x11d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+ .debug_abbrev  0x00005453      0x182 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+ .debug_abbrev  0x000055d5      0x26b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+ .debug_abbrev  0x00005840      0x2af CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+ .debug_abbrev  0x00005aef       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
+ .debug_abbrev  0x00005b01       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
+ .debug_abbrev  0x00005b13       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
+ .debug_abbrev  0x00005b25      0x17a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+ .debug_abbrev  0x00005c9f       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
+ .debug_abbrev  0x00005cb1       0x14 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
+ .debug_abbrev  0x00005cc5       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
+ .debug_abbrev  0x00005cd7      0x173 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+ .debug_abbrev  0x00005e4a       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
+ .debug_abbrev  0x00005e5c       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
+ .debug_abbrev  0x00005e6e       0xb8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
+ .debug_abbrev  0x00005f26      0x50c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+ .debug_abbrev  0x00006432       0x12 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
+ .debug_abbrev  0x00006444      0x352 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+ .debug_abbrev  0x00006796      0x5d9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+ .debug_abbrev  0x00006d6f      0x498 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+ .debug_abbrev  0x00007207      0x54e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+ .debug_abbrev  0x00007755      0x2fb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+ .debug_abbrev  0x00007a50      0x5d9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+ .debug_abbrev  0x00008029      0x480 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+ .debug_abbrev  0x000084a9      0x7f1 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+ .debug_abbrev  0x00008c9a      0x38d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+ .debug_abbrev  0x00009027      0x534 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+ .debug_abbrev  0x0000955b      0x443 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+ .debug_abbrev  0x0000999e      0x4b2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+ .debug_abbrev  0x00009e50      0x153 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+ .debug_abbrev  0x00009fa3      0x412 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+ .debug_abbrev  0x0000a3b5       0x26 /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x0000a3db       0x90 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
+ .debug_abbrev  0x0000a46b       0xc9 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
+ .debug_abbrev  0x0000a534       0xc3 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
+ .debug_abbrev  0x0000a5f7       0xbe /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
+ .debug_abbrev  0x0000a6b5      0x157 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
+ .debug_abbrev  0x0000a80c      0x1da /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
 .debug_loclists
-                0x00000000    0x29577
+                0x00000000    0x2a592
  .debug_loclists
                 0x00000000      0x97a CMakeFiles/mk4001_bridge.dir/src/main.c.o
  .debug_loclists
                 0x0000097a      0x21b CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
  .debug_loclists
-                0x00000b95     0x35af CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+                0x00000b95     0x45ca CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .debug_loclists
-                0x00004144     0x5209 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+                0x0000515f     0x5209 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
  .debug_loclists
-                0x0000934d      0x10c CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+                0x0000a368      0x10c CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
  .debug_loclists
-                0x00009459     0x1813 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+                0x0000a474     0x1813 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
  .debug_loclists
-                0x0000ac6c     0x23d5 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+                0x0000bc87     0x23d5 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
  .debug_loclists
-                0x0000d041     0x1a7f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+                0x0000e05c     0x1a7f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
  .debug_loclists
-                0x0000eac0       0x53 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+                0x0000fadb       0x53 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
  .debug_loclists
-                0x0000eb13      0x349 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+                0x0000fb2e      0x349 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
  .debug_loclists
-                0x0000ee5c      0x108 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+                0x0000fe77      0x108 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
  .debug_loclists
-                0x0000ef64       0x7d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+                0x0000ff7f       0x7d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
  .debug_loclists
-                0x0000efe1     0x11e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+                0x0000fffc     0x11e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
  .debug_loclists
-                0x000101c5       0x41 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+                0x000111e0       0x41 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
  .debug_loclists
-                0x00010206      0xaec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+                0x00011221      0xaec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
  .debug_loclists
-                0x00010cf2       0xb6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+                0x00011d0d       0xb6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
  .debug_loclists
-                0x00010da8     0x27bf CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+                0x00011dc3     0x27bf CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
  .debug_loclists
-                0x00013567     0x19eb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+                0x00014582     0x19eb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
  .debug_loclists
-                0x00014f52      0xc90 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+                0x00015f6d      0xc90 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
  .debug_loclists
-                0x00015be2     0x2b7c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+                0x00016bfd     0x2b7c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
  .debug_loclists
-                0x0001875e      0x1e0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+                0x00019779      0x1e0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
  .debug_loclists
-                0x0001893e       0x47 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+                0x00019959       0x47 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
  .debug_loclists
-                0x00018985      0x351 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+                0x000199a0      0x351 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
  .debug_loclists
-                0x00018cd6       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+                0x00019cf1       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
  .debug_loclists
-                0x00018d1e       0x7e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+                0x00019d39       0x7e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
  .debug_loclists
-                0x00018d9c      0x139 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+                0x00019db7      0x139 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
  .debug_loclists
-                0x00018ed5       0x74 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+                0x00019ef0       0x74 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
  .debug_loclists
-                0x00018f49       0x3d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+                0x00019f64       0x3d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
  .debug_loclists
-                0x00018f86       0x59 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+                0x00019fa1       0x59 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
  .debug_loclists
-                0x00018fdf     0x355f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+                0x00019ffa     0x355f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
  .debug_loclists
-                0x0001c53e      0x44e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+                0x0001d559      0x44e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
  .debug_loclists
-                0x0001c98c      0xf51 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+                0x0001d9a7      0xf51 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
  .debug_loclists
-                0x0001d8dd      0x75b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+                0x0001e8f8      0x75b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
  .debug_loclists
-                0x0001e038     0x20b9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+                0x0001f053     0x20b9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
  .debug_loclists
-                0x000200f1      0x315 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+                0x0002110c      0x315 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
  .debug_loclists
-                0x00020406     0x1bde CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+                0x00021421     0x1bde CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
  .debug_loclists
-                0x00021fe4      0x719 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+                0x00022fff      0x719 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
  .debug_loclists
-                0x000226fd     0x2197 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+                0x00023718     0x2197 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
  .debug_loclists
-                0x00024894      0x45e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+                0x000258af      0x45e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
  .debug_loclists
-                0x00024cf2      0xf80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+                0x00025d0d      0xf80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
  .debug_loclists
-                0x00025c72     0x1fdb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+                0x00026c8d     0x1fdb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
  .debug_loclists
-                0x00027c4d      0x3a5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+                0x00028c68      0x3a5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
  .debug_loclists
-                0x00027ff2      0x3d5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+                0x0002900d      0x3d5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
  .debug_loclists
-                0x000283c7      0xb24 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+                0x000293e2      0xb24 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
  .debug_loclists
-                0x00028eeb       0x57 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
+                0x00029f06       0x57 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
  .debug_loclists
-                0x00028f42       0x2c /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
+                0x00029f5d       0x2c /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
  .debug_loclists
-                0x00028f6e      0x3ac /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
+                0x00029f89      0x3ac /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
  .debug_loclists
-                0x0002931a       0x2b /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
+                0x0002a335       0x2b /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
  .debug_loclists
-                0x00029345       0xff /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
+                0x0002a360       0xff /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
  .debug_loclists
-                0x00029444      0x133 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+                0x0002a45f      0x133 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
-.debug_aranges  0x00000000     0x1a48
+.debug_aranges  0x00000000     0x1a50
  .debug_aranges
                 0x00000000       0x50 CMakeFiles/mk4001_bridge.dir/src/main.c.o
  .debug_aranges
                 0x00000050       0x30 CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
  .debug_aranges
-                0x00000080       0xc8 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+                0x00000080       0xd0 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .debug_aranges
-                0x00000148       0xb0 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+                0x00000150       0xb0 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
  .debug_aranges
-                0x000001f8       0x30 CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+                0x00000200       0x30 CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
  .debug_aranges
-                0x00000228       0xb0 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+                0x00000230       0xb0 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
  .debug_aranges
-                0x000002d8       0x60 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+                0x000002e0       0x60 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
  .debug_aranges
-                0x00000338      0x118 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+                0x00000340      0x118 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
  .debug_aranges
-                0x00000450       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+                0x00000458       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
  .debug_aranges
-                0x00000470       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
+                0x00000478       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
  .debug_aranges
-                0x00000498       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+                0x000004a0       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
  .debug_aranges
-                0x000004e0       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+                0x000004e8       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
  .debug_aranges
-                0x00000528       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+                0x00000530       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
  .debug_aranges
-                0x00000550       0xb8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+                0x00000558       0xb8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
  .debug_aranges
-                0x00000608       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+                0x00000610       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
  .debug_aranges
-                0x00000628       0x98 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+                0x00000630       0x98 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
  .debug_aranges
-                0x000006c0       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+                0x000006c8       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
  .debug_aranges
-                0x000006f0       0xe0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+                0x000006f8       0xe0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
  .debug_aranges
-                0x000007d0       0xf0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+                0x000007d8       0xf0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
  .debug_aranges
-                0x000008c0       0x58 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+                0x000008c8       0x58 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
  .debug_aranges
-                0x00000918       0x90 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+                0x00000920       0x90 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
  .debug_aranges
-                0x000009a8       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+                0x000009b0       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
  .debug_aranges
-                0x000009d0       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+                0x000009d8       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
  .debug_aranges
-                0x00000a00       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+                0x00000a08       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
  .debug_aranges
-                0x00000a40       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+                0x00000a48       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
  .debug_aranges
-                0x00000a70       0x38 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+                0x00000a78       0x38 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
  .debug_aranges
-                0x00000aa8       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+                0x00000ab0       0x48 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
  .debug_aranges
-                0x00000af0       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+                0x00000af8       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
  .debug_aranges
-                0x00000b10       0x60 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
+                0x00000b18       0x60 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
  .debug_aranges
-                0x00000b70       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
+                0x00000b78       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
  .debug_aranges
-                0x00000bb0      0x150 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
+                0x00000bb8      0x150 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
  .debug_aranges
-                0x00000d00       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+                0x00000d08       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
  .debug_aranges
-                0x00000d20       0xc8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
+                0x00000d28       0xc8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
  .debug_aranges
-                0x00000de8       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
+                0x00000df0       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
  .debug_aranges
-                0x00000e08      0x138 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
+                0x00000e10      0x138 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
  .debug_aranges
-                0x00000f40       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+                0x00000f48       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
  .debug_aranges
-                0x00000f60       0x50 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
+                0x00000f68       0x50 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
  .debug_aranges
-                0x00000fb0       0x38 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
+                0x00000fb8       0x38 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
  .debug_aranges
-                0x00000fe8       0x18 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
+                0x00000ff0       0x18 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
  .debug_aranges
-                0x00001000       0x90 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+                0x00001008       0x90 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
  .debug_aranges
-                0x00001090       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
+                0x00001098       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
  .debug_aranges
-                0x000010b8       0xa8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+                0x000010c0       0xa8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
  .debug_aranges
-                0x00001160       0xc8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+                0x00001168       0xc8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
  .debug_aranges
-                0x00001228       0x80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+                0x00001230       0x80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
  .debug_aranges
-                0x000012a8       0xd8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+                0x000012b0       0xd8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
  .debug_aranges
-                0x00001380       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+                0x00001388       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
  .debug_aranges
-                0x000013f0       0xc0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+                0x000013f8       0xc0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
  .debug_aranges
-                0x000014b0       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+                0x000014b8       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
  .debug_aranges
-                0x00001520      0x188 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+                0x00001528      0x188 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
  .debug_aranges
-                0x000016a8       0x50 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+                0x000016b0       0x50 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
  .debug_aranges
-                0x000016f8       0xb8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+                0x00001700       0xb8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
  .debug_aranges
-                0x000017b0       0xb0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+                0x000017b8       0xb0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
  .debug_aranges
-                0x00001860       0x58 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+                0x00001868       0x58 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
  .debug_aranges
-                0x000018b8       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+                0x000018c0       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
  .debug_aranges
-                0x000018e8       0x78 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+                0x000018f0       0x78 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
  .debug_aranges
-                0x00001960       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+                0x00001968       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
  .debug_aranges
-                0x00001980       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
+                0x00001988       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
  .debug_aranges
-                0x000019a0       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
+                0x000019a8       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
  .debug_aranges
-                0x000019c0       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
+                0x000019c8       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
  .debug_aranges
-                0x000019e0       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
+                0x000019e8       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
  .debug_aranges
-                0x00001a00       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
+                0x00001a08       0x20 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
  .debug_aranges
-                0x00001a20       0x28 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+                0x00001a28       0x28 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
 .debug_rnglists
-                0x00000000     0x6db4
+                0x00000000     0x6fde
  .debug_rnglists
                 0x00000000      0x263 CMakeFiles/mk4001_bridge.dir/src/main.c.o
  .debug_rnglists
                 0x00000263       0xb5 CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
  .debug_rnglists
-                0x00000318      0x958 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+                0x00000318      0xb82 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
  .debug_rnglists
-                0x00000c70      0xd7f CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+                0x00000e9a      0xd7f CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
  .debug_rnglists
-                0x000019ef       0x37 CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+                0x00001c19       0x37 CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
  .debug_rnglists
-                0x00001a26      0x46b CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+                0x00001c50      0x46b CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
  .debug_rnglists
-                0x00001e91      0x493 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+                0x000020bb      0x493 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
  .debug_rnglists
-                0x00002324      0x5ca CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+                0x0000254e      0x5ca CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
  .debug_rnglists
-                0x000028ee       0x13 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+                0x00002b18       0x13 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
  .debug_rnglists
-                0x00002901       0x19 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
+                0x00002b2b       0x19 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
  .debug_rnglists
-                0x0000291a       0xb6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+                0x00002b44       0xb6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
  .debug_rnglists
-                0x000029d0       0x58 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+                0x00002bfa       0x58 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
  .debug_rnglists
-                0x00002a28       0x3d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+                0x00002c52       0x3d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
  .debug_rnglists
-                0x00002a65      0x37d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+                0x00002c8f      0x37d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
  .debug_rnglists
-                0x00002de2       0x1f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+                0x0000300c       0x1f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
  .debug_rnglists
-                0x00002e01      0x325 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+                0x0000302b      0x325 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
  .debug_rnglists
-                0x00003126       0x2b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+                0x00003350       0x2b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
  .debug_rnglists
-                0x00003151      0x7dc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+                0x0000337b      0x7dc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
  .debug_rnglists
-                0x0000392d      0x2c6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+                0x00003b57      0x2c6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
  .debug_rnglists
-                0x00003bf3      0x259 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+                0x00003e1d      0x259 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
  .debug_rnglists
-                0x00003e4c      0x5be CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+                0x00004076      0x5be CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
  .debug_rnglists
-                0x0000440a       0x5c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+                0x00004634       0x5c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
  .debug_rnglists
-                0x00004466       0x2b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+                0x00004690       0x2b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
  .debug_rnglists
-                0x00004491      0x112 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+                0x000046bb      0x112 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
  .debug_rnglists
-                0x000045a3       0x1f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+                0x000047cd       0x1f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
  .debug_rnglists
-                0x000045c2       0x3d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+                0x000047ec       0x3d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
  .debug_rnglists
-                0x000045ff       0x4a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+                0x00004829       0x4a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
  .debug_rnglists
-                0x00004649       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+                0x00004873       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
  .debug_rnglists
-                0x00004669       0x43 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
+                0x00004893       0x43 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
  .debug_rnglists
-                0x000046ac       0x2c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
+                0x000048d6       0x2c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
  .debug_rnglists
-                0x000046d8       0xf9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
+                0x00004902       0xf9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
  .debug_rnglists
-                0x000047d1       0x14 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+                0x000049fb       0x14 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
  .debug_rnglists
-                0x000047e5       0x99 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
+                0x00004a0f       0x99 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
  .debug_rnglists
-                0x0000487e       0xe5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
+                0x00004aa8       0xe5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
  .debug_rnglists
-                0x00004963       0x13 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+                0x00004b8d       0x13 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
  .debug_rnglists
-                0x00004976       0x38 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
+                0x00004ba0       0x38 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
  .debug_rnglists
-                0x000049ae       0x25 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
+                0x00004bd8       0x25 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
  .debug_rnglists
-                0x000049d3      0x2a2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+                0x00004bfd      0x2a2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
  .debug_rnglists
-                0x00004c75       0x1b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
+                0x00004e9f       0x1b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
  .debug_rnglists
-                0x00004c90       0x85 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+                0x00004eba       0x85 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
  .debug_rnglists
-                0x00004d15      0x2bb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+                0x00004f3f      0x2bb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
  .debug_rnglists
-                0x00004fd0      0x1ce CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+                0x000051fa      0x1ce CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
  .debug_rnglists
-                0x0000519e      0x4d9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+                0x000053c8      0x4d9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
  .debug_rnglists
-                0x00005677       0xca CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+                0x000058a1       0xca CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
  .debug_rnglists
-                0x00005741      0x425 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+                0x0000596b      0x425 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
  .debug_rnglists
-                0x00005b66       0xe8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+                0x00005d90       0xe8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
  .debug_rnglists
-                0x00005c4e      0x5f6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+                0x00005e78      0x5f6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
  .debug_rnglists
-                0x00006244       0x8e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+                0x0000646e       0x8e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
  .debug_rnglists
-                0x000062d2      0x210 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+                0x000064fc      0x210 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
  .debug_rnglists
-                0x000064e2      0x3d3 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+                0x0000670c      0x3d3 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
  .debug_rnglists
-                0x000068b5       0xf7 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+                0x00006adf       0xf7 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
  .debug_rnglists
-                0x000069ac       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+                0x00006bd6       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
  .debug_rnglists
-                0x00006a1c      0x368 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+                0x00006c46      0x368 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
  .debug_rnglists
-                0x00006d84       0x30 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+                0x00006fae       0x30 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
-.debug_line     0x00000000    0x2ed1b
+.debug_line     0x00000000    0x2f977
  .debug_line    0x00000000     0x10cb CMakeFiles/mk4001_bridge.dir/src/main.c.o
  .debug_line    0x000010cb      0x476 CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
- .debug_line    0x00001541     0x2ed4 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
- .debug_line    0x00004415     0x40b4 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
- .debug_line    0x000084c9      0x26f CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
- .debug_line    0x00008738     0x2137 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
- .debug_line    0x0000a86f     0x198b CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
- .debug_line    0x0000c1fa     0x1b9b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
- .debug_line    0x0000dd95      0x1b5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
- .debug_line    0x0000df4a      0x1e0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
- .debug_line    0x0000e12a      0x829 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
- .debug_line    0x0000e953      0x413 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
- .debug_line    0x0000ed66      0x301 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
- .debug_line    0x0000f067     0x16de CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
- .debug_line    0x00010745      0x22c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
- .debug_line    0x00010971     0x1aab CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
- .debug_line    0x0001241c      0x354 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
- .debug_line    0x00012770     0x344a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
- .debug_line    0x00015bba     0x1c74 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
- .debug_line    0x0001782e      0xec5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
- .debug_line    0x000186f3     0x2069 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
- .debug_line    0x0001a75c      0x443 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
- .debug_line    0x0001ab9f      0x28b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
- .debug_line    0x0001ae2a      0x3cb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
- .debug_line    0x0001b1f5      0x2a6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
- .debug_line    0x0001b49b      0x26c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
- .debug_line    0x0001b707      0x607 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
- .debug_line    0x0001bd0e      0x486 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
- .debug_line    0x0001c194      0x108 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
- .debug_line    0x0001c29c      0x2a9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
- .debug_line    0x0001c545      0x452 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
- .debug_line    0x0001c997      0x3c0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
- .debug_line    0x0001cd57      0x66d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
- .debug_line    0x0001d3c4       0x61 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
- .debug_line    0x0001d425      0x3d2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
- .debug_line    0x0001d7f7      0x2d5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
- .debug_line    0x0001dacc      0x195 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
- .debug_line    0x0001dc61       0x94 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
- .debug_line    0x0001dcf5      0x154 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
- .debug_line    0x0001de49     0x1bf6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
- .debug_line    0x0001fa3f       0xa2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
- .debug_line    0x0001fae1      0x7cb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
- .debug_line    0x000202ac     0x1343 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
- .debug_line    0x000215ef      0xcc5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
- .debug_line    0x000222b4     0x1cc4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
- .debug_line    0x00023f78      0x681 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
- .debug_line    0x000245f9     0x1d6a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
- .debug_line    0x00026363      0xbb0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
- .debug_line    0x00026f13     0x2744 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
- .debug_line    0x00029657      0x5cd CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
- .debug_line    0x00029c24     0x1125 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
- .debug_line    0x0002ad49     0x197f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
- .debug_line    0x0002c6c8      0x9e6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
- .debug_line    0x0002d0ae      0x568 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
- .debug_line    0x0002d616      0xd8c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
- .debug_line    0x0002e3a2       0x4a /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_line    0x0002e3ec      0x1ae /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
- .debug_line    0x0002e59a       0xd1 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
- .debug_line    0x0002e66b      0x1f9 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
- .debug_line    0x0002e864       0xca /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
- .debug_line    0x0002e92e      0x167 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
- .debug_line    0x0002ea95      0x286 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+ .debug_line    0x00001541     0x3b30 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .debug_line    0x00005071     0x40b4 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+ .debug_line    0x00009125      0x26f CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+ .debug_line    0x00009394     0x2137 CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+ .debug_line    0x0000b4cb     0x198b CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+ .debug_line    0x0000ce56     0x1b9b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+ .debug_line    0x0000e9f1      0x1b5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+ .debug_line    0x0000eba6      0x1e0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
+ .debug_line    0x0000ed86      0x829 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+ .debug_line    0x0000f5af      0x413 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+ .debug_line    0x0000f9c2      0x301 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+ .debug_line    0x0000fcc3     0x16de CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+ .debug_line    0x000113a1      0x22c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+ .debug_line    0x000115cd     0x1aab CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+ .debug_line    0x00013078      0x354 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+ .debug_line    0x000133cc     0x344a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+ .debug_line    0x00016816     0x1c74 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+ .debug_line    0x0001848a      0xec5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+ .debug_line    0x0001934f     0x2069 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+ .debug_line    0x0001b3b8      0x443 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+ .debug_line    0x0001b7fb      0x28b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+ .debug_line    0x0001ba86      0x3cb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+ .debug_line    0x0001be51      0x2a6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+ .debug_line    0x0001c0f7      0x26c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+ .debug_line    0x0001c363      0x607 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+ .debug_line    0x0001c96a      0x486 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+ .debug_line    0x0001cdf0      0x108 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
+ .debug_line    0x0001cef8      0x2a9 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
+ .debug_line    0x0001d1a1      0x452 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
+ .debug_line    0x0001d5f3      0x3c0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+ .debug_line    0x0001d9b3      0x66d CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
+ .debug_line    0x0001e020       0x61 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
+ .debug_line    0x0001e081      0x3d2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
+ .debug_line    0x0001e453      0x2d5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+ .debug_line    0x0001e728      0x195 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
+ .debug_line    0x0001e8bd       0x94 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
+ .debug_line    0x0001e951      0x154 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
+ .debug_line    0x0001eaa5     0x1bf6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+ .debug_line    0x0002069b       0xa2 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
+ .debug_line    0x0002073d      0x7cb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+ .debug_line    0x00020f08     0x1343 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+ .debug_line    0x0002224b      0xcc5 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+ .debug_line    0x00022f10     0x1cc4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+ .debug_line    0x00024bd4      0x681 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+ .debug_line    0x00025255     0x1d6a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+ .debug_line    0x00026fbf      0xbb0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+ .debug_line    0x00027b6f     0x2744 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+ .debug_line    0x0002a2b3      0x5cd CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+ .debug_line    0x0002a880     0x1125 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+ .debug_line    0x0002b9a5     0x197f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+ .debug_line    0x0002d324      0x9e6 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+ .debug_line    0x0002dd0a      0x568 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+ .debug_line    0x0002e272      0xd8c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+ .debug_line    0x0002effe       0x4a /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_line    0x0002f048      0x1ae /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
+ .debug_line    0x0002f1f6       0xd1 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
+ .debug_line    0x0002f2c7      0x1f9 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
+ .debug_line    0x0002f4c0       0xca /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
+ .debug_line    0x0002f58a      0x167 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
+ .debug_line    0x0002f6f1      0x286 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
-.debug_str      0x00000000     0xa26d
- .debug_str     0x00000000     0xa26d CMakeFiles/mk4001_bridge.dir/src/main.c.o
+.debug_str      0x00000000     0xa295
+ .debug_str     0x00000000     0xa295 CMakeFiles/mk4001_bridge.dir/src/main.c.o
                                 0xd40 (size before relaxing)
- .debug_str     0x0000a26d      0x427 CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
- .debug_str     0x0000a26d      0x62b CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
- .debug_str     0x0000a26d     0x1af7 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
- .debug_str     0x0000a26d      0x93b CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
- .debug_str     0x0000a26d      0xf9d CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
- .debug_str     0x0000a26d     0x1844 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
- .debug_str     0x0000a26d      0xc80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
- .debug_str     0x0000a26d      0x1c8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
- .debug_str     0x0000a26d      0x1e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
- .debug_str     0x0000a26d      0x352 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
- .debug_str     0x0000a26d      0x2fb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
- .debug_str     0x0000a26d      0x218 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
- .debug_str     0x0000a26d      0xa60 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
- .debug_str     0x0000a26d      0x1e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
- .debug_str     0x0000a26d      0x78b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
- .debug_str     0x0000a26d      0x2a4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
- .debug_str     0x0000a26d     0x1171 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
- .debug_str     0x0000a26d      0x9dc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
- .debug_str     0x0000a26d      0xbff CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
- .debug_str     0x0000a26d      0x9be CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
- .debug_str     0x0000a26d      0x42b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
- .debug_str     0x0000a26d      0x25a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
- .debug_str     0x0000a26d      0x314 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
- .debug_str     0x0000a26d      0x20f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
- .debug_str     0x0000a26d      0x26a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
- .debug_str     0x0000a26d      0x792 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
- .debug_str     0x0000a26d      0x467 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
- .debug_str     0x0000a26d       0x6c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
- .debug_str     0x0000a26d       0x6f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
- .debug_str     0x0000a26d       0x71 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
- .debug_str     0x0000a26d      0x27e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
- .debug_str     0x0000a26d       0x77 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
- .debug_str     0x0000a26d       0x75 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
- .debug_str     0x0000a26d       0x6f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
- .debug_str     0x0000a26d      0x263 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
- .debug_str     0x0000a26d       0x75 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
- .debug_str     0x0000a26d       0x6c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
- .debug_str     0x0000a26d      0x3ba CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
- .debug_str     0x0000a26d      0x4b1 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
- .debug_str     0x0000a26d       0x60 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
- .debug_str     0x0000a26d      0x75f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
- .debug_str     0x0000a26d      0xd6a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
- .debug_str     0x0000a26d      0xed4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
- .debug_str     0x0000a26d     0x1080 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
- .debug_str     0x0000a26d      0x597 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
- .debug_str     0x0000a26d     0x11ec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
- .debug_str     0x0000a26d      0x9f0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
- .debug_str     0x0000a26d     0x1ad4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
- .debug_str     0x0000a26d      0x6a0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
- .debug_str     0x0000a26d      0xdd8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
- .debug_str     0x0000a26d      0x5e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
- .debug_str     0x0000a26d      0xd6f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
- .debug_str     0x0000a26d      0x24b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
- .debug_str     0x0000a26d      0x757 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
- .debug_str     0x0000a26d       0xba /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_str     0x0000a26d      0x1ae /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
- .debug_str     0x0000a26d      0x1c8 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
- .debug_str     0x0000a26d      0x1c4 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
- .debug_str     0x0000a26d      0x1ce /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
- .debug_str     0x0000a26d      0x239 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
- .debug_str     0x0000a26d      0x25b /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+ .debug_str     0x0000a295      0x427 CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
+ .debug_str     0x0000a295      0x653 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .debug_str     0x0000a295     0x1af7 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+ .debug_str     0x0000a295      0x93b CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+ .debug_str     0x0000a295      0xf9d CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+ .debug_str     0x0000a295     0x1844 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+ .debug_str     0x0000a295      0xc80 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+ .debug_str     0x0000a295      0x1c8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+ .debug_str     0x0000a295      0x1e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
+ .debug_str     0x0000a295      0x352 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+ .debug_str     0x0000a295      0x2fb CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+ .debug_str     0x0000a295      0x218 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+ .debug_str     0x0000a295      0xa60 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+ .debug_str     0x0000a295      0x1e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+ .debug_str     0x0000a295      0x78b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+ .debug_str     0x0000a295      0x2a4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+ .debug_str     0x0000a295     0x1171 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+ .debug_str     0x0000a295      0x9dc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+ .debug_str     0x0000a295      0xbff CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+ .debug_str     0x0000a295      0x9be CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+ .debug_str     0x0000a295      0x42b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+ .debug_str     0x0000a295      0x25a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+ .debug_str     0x0000a295      0x314 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+ .debug_str     0x0000a295      0x20f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+ .debug_str     0x0000a295      0x26a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+ .debug_str     0x0000a295      0x792 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+ .debug_str     0x0000a295      0x467 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+ .debug_str     0x0000a295       0x6c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
+ .debug_str     0x0000a295       0x6f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S.o
+ .debug_str     0x0000a295       0x71 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
+ .debug_str     0x0000a295      0x27e CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+ .debug_str     0x0000a295       0x77 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
+ .debug_str     0x0000a295       0x75 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
+ .debug_str     0x0000a295       0x6f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
+ .debug_str     0x0000a295      0x263 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+ .debug_str     0x0000a295       0x75 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
+ .debug_str     0x0000a295       0x6c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
+ .debug_str     0x0000a295      0x3ba CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
+ .debug_str     0x0000a295      0x4b1 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+ .debug_str     0x0000a295       0x60 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_crt0/crt0.S.o
+ .debug_str     0x0000a295      0x75f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+ .debug_str     0x0000a295      0xd6a CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+ .debug_str     0x0000a295      0xed4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+ .debug_str     0x0000a295     0x1080 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+ .debug_str     0x0000a295      0x597 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+ .debug_str     0x0000a295     0x11ec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+ .debug_str     0x0000a295      0x9f0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+ .debug_str     0x0000a295     0x1ad4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+ .debug_str     0x0000a295      0x6a0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+ .debug_str     0x0000a295      0xdd8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+ .debug_str     0x0000a295      0x5e4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+ .debug_str     0x0000a295      0xd6f CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+ .debug_str     0x0000a295      0x24b CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+ .debug_str     0x0000a295      0x757 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+ .debug_str     0x0000a295       0xba /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_str     0x0000a295      0x1ae /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
+ .debug_str     0x0000a295      0x1c8 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
+ .debug_str     0x0000a295      0x1c4 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
+ .debug_str     0x0000a295      0x1ce /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
+ .debug_str     0x0000a295      0x239 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
+ .debug_str     0x0000a295      0x25b /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
-.debug_frame    0x00000000     0x3b34
+.debug_frame    0x00000000     0x3b60
  .debug_frame   0x00000000       0xe0 CMakeFiles/mk4001_bridge.dir/src/main.c.o
  .debug_frame   0x000000e0       0x5c CMakeFiles/mk4001_bridge.dir/src/sdio_hw.c.o
- .debug_frame   0x0000013c      0x318 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
- .debug_frame   0x00000454      0x2b0 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
- .debug_frame   0x00000704       0x4c CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
- .debug_frame   0x00000750      0x22c CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
- .debug_frame   0x0000097c      0x114 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
- .debug_frame   0x00000a90      0x320 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
- .debug_frame   0x00000db0       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
- .debug_frame   0x00000dd0       0x44 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
- .debug_frame   0x00000e14       0xa0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
- .debug_frame   0x00000eb4       0xa8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
- .debug_frame   0x00000f5c       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
- .debug_frame   0x00000f8c      0x1cc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
- .debug_frame   0x00001158       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
- .debug_frame   0x00001178      0x1e8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
- .debug_frame   0x00001360       0x50 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
- .debug_frame   0x000013b0      0x2ec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
- .debug_frame   0x0000169c      0x2c4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
- .debug_frame   0x00001960       0xec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
- .debug_frame   0x00001a4c      0x1f4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
- .debug_frame   0x00001c40       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
- .debug_frame   0x00001c80       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
- .debug_frame   0x00001cc0       0xa0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
- .debug_frame   0x00001d60       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
- .debug_frame   0x00001da0       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
- .debug_frame   0x00001e10       0x88 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
- .debug_frame   0x00001e98       0x2c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
- .debug_frame   0x00001ec4       0x2c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
- .debug_frame   0x00001ef0       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
- .debug_frame   0x00001f18      0x1f0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
- .debug_frame   0x00002108      0x184 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
- .debug_frame   0x0000228c      0x2a8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
- .debug_frame   0x00002534      0x158 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
- .debug_frame   0x0000268c      0x344 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
- .debug_frame   0x000029d0      0x134 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
- .debug_frame   0x00002b04      0x220 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
- .debug_frame   0x00002d24      0x124 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
- .debug_frame   0x00002e48      0x414 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
- .debug_frame   0x0000325c       0xc0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
- .debug_frame   0x0000331c      0x238 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
- .debug_frame   0x00003554      0x220 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
- .debug_frame   0x00003774       0xd4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
- .debug_frame   0x00003848       0x5c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
- .debug_frame   0x000038a4      0x15c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
- .debug_frame   0x00003a00       0x28 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
- .debug_frame   0x00003a28       0x2c /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
- .debug_frame   0x00003a54       0x30 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
- .debug_frame   0x00003a84       0x28 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
- .debug_frame   0x00003aac       0x34 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
- .debug_frame   0x00003ae0       0x54 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
+ .debug_frame   0x0000013c      0x344 CMakeFiles/mk4001_bridge.dir/src/ata_sdio.c.o
+ .debug_frame   0x00000480      0x2b0 CMakeFiles/mk4001_bridge.dir/src/sdio_pio.c.o
+ .debug_frame   0x00000730       0x4c CMakeFiles/mk4001_bridge.dir/src/usb_descriptors.c.o
+ .debug_frame   0x0000077c      0x22c CMakeFiles/mk4001_bridge.dir/src/msc_device.c.o
+ .debug_frame   0x000009a8      0x114 CMakeFiles/mk4001_bridge.dir/lib/tinyusb_patched/msc_device.c.o
+ .debug_frame   0x00000abc      0x320 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.o
+ .debug_frame   0x00000ddc       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2040/pico_platform/platform.c.o
+ .debug_frame   0x00000dfc       0x44 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.o
+ .debug_frame   0x00000e40       0xa0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/hardware_claim/claim.c.o
+ .debug_frame   0x00000ee0       0xa8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.o
+ .debug_frame   0x00000f88       0x30 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+ .debug_frame   0x00000fb8      0x1cc CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.o
+ .debug_frame   0x00001184       0x20 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/lock_core.c.o
+ .debug_frame   0x000011a4      0x1e8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/mutex.c.o
+ .debug_frame   0x0000138c       0x50 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_sync/critical_section.c.o
+ .debug_frame   0x000013dc      0x2ec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/common/pico_time/time.c.o
+ .debug_frame   0x000016c8      0x2c4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_timer/timer.c.o
+ .debug_frame   0x0000198c       0xec CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_uart/uart.c.o
+ .debug_frame   0x00001a78      0x1f4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.o
+ .debug_frame   0x00001c6c       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.o
+ .debug_frame   0x00001cac       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.o
+ .debug_frame   0x00001cec       0xa0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.o
+ .debug_frame   0x00001d8c       0x40 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.o
+ .debug_frame   0x00001dcc       0x70 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime/runtime.c.o
+ .debug_frame   0x00001e3c       0x88 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.o
+ .debug_frame   0x00001ec4       0x2c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+ .debug_frame   0x00001ef0       0x2c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+ .debug_frame   0x00001f1c       0x28 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+ .debug_frame   0x00001f44      0x1f0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_printf/printf.c.o
+ .debug_frame   0x00002134      0x184 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+ .debug_frame   0x000022b8      0x2a8 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio/stdio.c.o
+ .debug_frame   0x00002560      0x158 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.o
+ .debug_frame   0x000026b8      0x344 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.o
+ .debug_frame   0x000029fc      0x134 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.o
+ .debug_frame   0x00002b30      0x220 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+ .debug_frame   0x00002d50      0x124 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+ .debug_frame   0x00002e74      0x414 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd.c.o
+ .debug_frame   0x00003288       0xc0 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c.o
+ .debug_frame   0x00003348      0x238 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/tusb.c.o
+ .debug_frame   0x00003580      0x220 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c.o
+ .debug_frame   0x000037a0       0xd4 CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c.o
+ .debug_frame   0x00003874       0x5c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.o
+ .debug_frame   0x000038d0      0x15c CMakeFiles/mk4001_bridge.dir/home/pi/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c.o
+ .debug_frame   0x00003a2c       0x28 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-strlen-stub.o)
+ .debug_frame   0x00003a54       0x2c /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-fini.o)
+ .debug_frame   0x00003a80       0x30 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-memmove.o)
+ .debug_frame   0x00003ab0       0x28 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-atexit.o)
+ .debug_frame   0x00003ad8       0x34 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__atexit.o)
+ .debug_frame   0x00003b0c       0x54 /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libg.a(libc_a-__call_atexit.o)
 
 .debug_line_str
                 0x00000000      0x2c1
