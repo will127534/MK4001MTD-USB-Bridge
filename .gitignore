@@ -1,0 +1,11 @@
+# Only the final firmware artifacts are tracked under build/ —
+# the rest of the CMake build tree is regenerated locally.
+build/*
+!build/mk4001_bridge.bin
+!build/mk4001_bridge.dis
+!build/mk4001_bridge.elf
+!build/mk4001_bridge.elf.map
+!build/mk4001_bridge.hex
+!build/mk4001_bridge.uf2
+!build/pico_flash_region.ld
+!build/sdio.pio.h
