@@ -9,7 +9,9 @@ RP2040 (Pico) firmware bridging a Toshiba MK4001MTD 0.85" microdrive to USB Mass
 ## Commands
 
 ```bash
-# Build (PICO_SDK_PATH is hardcoded to /home/pi/pico/pico-sdk in CMakeLists.txt)
+# Build (SDK from $PICO_SDK_PATH — exported on this bench; without it, CMake
+# fetches the pinned pico-sdk release from GitHub. Pin: MK4001_PICO_SDK_PIN
+# in CMakeLists.txt, enforced at configure time.)
 cd build && cmake .. && make -j4
 
 # Flash via SWD debug probe (CMSIS-DAP, uses sudo openocd)
@@ -39,7 +41,7 @@ sudo ./testscript/test.sh [/dev/sdX]
 
 ## Patched TinyUSB MSC driver (vendored in-repo)
 
-The firmware compiles `lib/tinyusb_patched/msc_device.c` **instead of** the SDK TinyUSB's MSC class driver — `CMakeLists.txt` filters the stock file out of the `tinyusb_device_base` interface sources. Two deltas vs upstream (full diff in `lib/tinyusb_patched/msc_device.c.patch`): app-set sense data is preserved on READ10/WRITE10 errors (required for `MEDIUM ERROR` bad-sector reporting), and MODE SENSE(6) reports a Caching mode page with WCE=1 (hosts then flush via SYNCHRONIZE CACHE). **The pico-sdk (including its TinyUSB) is fully pristine** — the repo must keep building against a stock SDK; never patch the SDK tree. If the SDK/TinyUSB is updated, re-apply the patch to the new upstream file and refresh the vendored copy. (`lib/tinyusb_patched/hub-host-fixes.patch` is an unrelated host-mode patch preserved for reference only.)
+The firmware compiles `lib/tinyusb_patched/msc_device.c` **instead of** the SDK TinyUSB's MSC class driver — `CMakeLists.txt` filters the stock file out of the `tinyusb_device_base` interface sources. Two deltas vs upstream (full diff in `lib/tinyusb_patched/msc_device.c.patch`): app-set sense data is preserved on READ10/WRITE10 errors (required for `MEDIUM ERROR` bad-sector reporting), and MODE SENSE(6) reports a Caching mode page with WCE=1 (hosts then flush via SYNCHRONIZE CACHE). **This repo needs zero SDK modifications and is pinned to pico-sdk 2.2.0** (`MK4001_PICO_SDK_PIN` in CMakeLists.txt, enforced at configure) because the vendored file must match the SDK's bundled TinyUSB (0.18.0). Never patch SDK files this firmware compiles; to move to a newer SDK, re-apply `msc_device.c.patch` to the new upstream, refresh the vendored copy, and bump the pin. The bench SDK's TinyUSB carries the user's own `hub.c` host-mode patch for *other* projects (also archived as `lib/tinyusb_patched/hub-host-fixes.patch`) — it is never compiled by this firmware; leave it alone.
 
 ## Architecture
 

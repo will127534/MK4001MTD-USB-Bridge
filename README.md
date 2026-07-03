@@ -200,16 +200,24 @@ Point 6 is not academic: this drive had a long-standing unreadable sector at `LB
 
 ### Prerequisites
 
-- Raspberry Pi Pico SDK — **stock, unmodified** (set `PICO_SDK_PATH` in `CMakeLists.txt` or the environment)
+- Raspberry Pi Pico SDK — **stock, unmodified, pinned to 2.2.0**
 - ARM toolchain (`arm-none-eabi-gcc`)
 - CMake
+
+The SDK version is **locked**: if `PICO_SDK_PATH` is set (environment or
+CMake variable) it is used and its version is checked against the pin —
+a mismatch fails the configure with instructions (override with
+`-DMK4001_ALLOW_SDK_MISMATCH=ON`). With no `PICO_SDK_PATH` at all, the
+pinned SDK release is fetched from GitHub automatically at configure
+time, so a bare `git clone && cmake && make` is fully reproducible.
 
 The firmware needs a patched TinyUSB MSC class driver (app sense data
 preserved on read/write errors + a Caching mode page with WCE=1). That
 file is **vendored in this repo** at `lib/tinyusb_patched/msc_device.c` —
-the build automatically compiles it instead of the SDK's copy, so a plain
-clone builds correctly against a pristine pico-sdk with no SDK surgery.
-The diff against upstream TinyUSB is in `lib/tinyusb_patched/`.
+the build automatically compiles it instead of the SDK's copy, so no SDK
+surgery is ever needed. The diff against upstream TinyUSB (0.18.0, as
+bundled with pico-sdk 2.2.0) is in `lib/tinyusb_patched/`; the SDK pin
+exists precisely because this vendored file must track the SDK's TinyUSB.
 
 ### Build & Flash
 
